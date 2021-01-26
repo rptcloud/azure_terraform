@@ -20,7 +20,7 @@ In order to organize your code inside the `lab_exercise` directory, create the f
 lab_exercise
 ├── main.tf
 ├── modules
-│   └── my-linux-vm
+│   └── my_linux_vm
 |          └── main.tf
 ├── terraform.tfvars
 └── variables.tf
