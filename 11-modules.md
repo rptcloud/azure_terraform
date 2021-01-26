@@ -153,9 +153,10 @@ variable "username" {}
 ### Pass in Variables
 
 Create a file called 'terraform.tfvars' and add the following variables:
+Make sure to replace "###" with your initials
 
 ```sh
-prefix   = "###"
+prefix   = "###" 
 location = "East US"
 username = "Plankton"
 ```
