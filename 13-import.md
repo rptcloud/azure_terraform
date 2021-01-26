@@ -19,7 +19,8 @@ We need two values to run the `terraform import` command:
 1. Resource Address for our configuration
 1. Azure Resource ID
 
-The Resource Address can be whatever we would like to reference the resource group as.  For this lab the reference will be "azurerm_resource_group.my_rg".
+The Resource Address can be whatever we would like to reference the resource group as.
+For this lab the reference will be "azurerm_resource_group.my_rg".
 
 We first need to simply need to add this into our `main.tf`
 
@@ -40,7 +41,8 @@ and then initialize terraform:
 terraform init
 ```
 
-The Azure Resource ID can be retrieved using the Azure CLI by running `az group show -g import-rg-1 --query id`. The value should look something like "/subscriptions/xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/import-rg-1".
+The Azure Resource ID can be retrieved using the Azure CLI by running `az group show -g import-rg-1 --query id`.
+The value should look something like "/subscriptions/xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/import-rg-1".
 
 You will be provided the Resource Group ID to import by your instructor.
 
@@ -50,9 +52,10 @@ Now run the import command:
 terraform import azurerm_resource_group.my_rg /subscriptions/xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/import-rg-1
 
 Import successful!
+```
 
-The resources that were imported are shown above. These resources are now in
-your Terraform state and will henceforth be managed by Terraform.
+The resources that were imported are shown above.
+These resources are now in your Terraform state and will henceforth be managed by Terraform.
 
 You can inspect the resource group that was added into state by performing a
 
@@ -74,7 +77,8 @@ resource "azurerm_resource_group" "my_rg" {
 
 ### Verify Plan
 
-Run a `terraform plan`.  You may see see changes if your name or location in the configuration is different from the resource shown in state which it most likely will be.  Update the name attribute of the resource group in the `main.tf` to reflect the name of the resource group that was imported.
+Run a `terraform plan`.
+You may see see changes if your name or location in the configuration is different from the resource shown in state which it most likely will be.  Update the name attribute of the resource group in the `main.tf` to reflect the name of the resource group that was imported.
 
 ```sh
 terraform plan
@@ -102,7 +106,7 @@ resource "azurerm_resource_group" "import" {
 
 Run a plan, we should see two changes.
 
-```sh
+```text
  ~ tags     = {
           + "terraform" = "true"
         }
@@ -125,7 +129,6 @@ terraform destroy
 Because the infrastructure is now managed by Terraform, we can destroy just like before.
 
 Run a `terraform destroy` and follow the prompts to remove the infrastructure.
-
 
 ## Resources
 
