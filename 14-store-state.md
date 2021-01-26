@@ -2,7 +2,8 @@
 
 Duration: 20 minutes
 
-This lab demonstrates how to store state on Terraform Cloud and read from it. You'll setup a new project using Terraform Cloud as your backed and use a second project to read from it.
+This lab demonstrates how to store state on Terraform Cloud and read from it.
+You'll setup a new project using Terraform Cloud as your backed and use a second project to read from it.
 
 - Task 1: Create a Terraform Cloud user token
 - Task 2: Create a configuration which stores its state on Terraform Cloud
@@ -33,7 +34,8 @@ Enter a unique organization name and an email address for notifications, then cl
 
 ### Step 2.1.2:
 
-Terraform's CLI needs credentials before it can access Terraform Cloud. First we will create the Terraform CLI configuration file:
+Terraform's CLI needs credentials before it can access Terraform Cloud.
+First we will create the Terraform CLI configuration file:
 
 ```shell
 touch ~/.terraformrc
@@ -53,7 +55,8 @@ Leave your editor open.
 
 In your web browser, go to the [tokens section](https://app.terraform.io/app/settings/tokens) of your user settings or click the user icon in the upper right corner, click "User Settings", then click "Tokens" in the left sidebar.
 
-Generate a new token by entering a description and clicking the "Generate token" button. The new token will appear in a text area below the description field.
+Generate a new token by entering a description and clicking the "Generate token" button.
+The new token will appear in a text area below the description field.
 
 Copy the token to the clipboard.
 
@@ -79,9 +82,6 @@ In this step, you'll create the project and a configuration.
 
 ```shell
 mkdir -p /workstation/terraform/azure/cloud_state_demo/write_state && cd $_
-```
-
-```shell
 touch main.tf
 ```
 
@@ -89,7 +89,7 @@ touch main.tf
 
 Setup the configuration to utilize the `remote` backend, replacing `ORGANIZATION NAME` with the name of your organization and ```###``` with your initials.
 
-```bash
+```hcl
 # write_state/main.tf
 terraform {
   backend "remote" {
@@ -106,7 +106,7 @@ terraform {
 
 Next, add the ability to generate and emit a `random` output from your configuration:
 
-```bash
+```hcl
 # write_state/main.tf
 resource "random_id" "random" {
   keepers = {
@@ -127,17 +127,18 @@ Provision the resource and push the state to Terraform Cloud with:
 
 ```shell
 terraform init
-```
-
-```shell
 terraform apply -auto-approve
 ```
 
-You'll see Terraform confirm it is creating your state remotely as well as your `random` output. If you navigate back to your organization, you will also see a new workspace name `###_write_state`.
+You'll see Terraform confirm it is creating your state remotely as well as your `random` output.
+If you navigate back to your organization, you will also see a new workspace name `###_write_state`.
 
 ### Step 2.2.5
 
-Congratulations! You're now storing state remotely. With Terraform Cloud you are able to share your workspace with teammates. Back in the Terraform Cloud UI you'll be able to:
+Congratulations!
+You're now storing state remotely.
+With Terraform Cloud you are able to share your workspace with teammates.
+Back in the Terraform Cloud UI you'll be able to:
 
 * View all your organization's workspaces
 * Lock a workspace, making it easy to avoid conflicting changes and state corruption
@@ -153,17 +154,15 @@ Start by creating a new directory and `main.tf` file:
 
 ```shell
 mkdir -p /workstation/terraform/azure/cloud_state_demo/read_state && cd $_
-```
-
-```shell
 touch main.tf
 ```
 
 ### Step 2.3.2
 
-Just as we did in Step 2.2.2, we need to setup our configuration to use the `remote` backend, once again replacing `ORGANIZATION NAME`. We will also create a new `random` resource to compare against:
+Just as we did in Step 2.2.2, we need to setup our configuration to use the `remote` backend, once again replacing `ORGANIZATION NAME`.
+We will also create a new `random` resource to compare against:
 
-```bash
+```hcl
 # read_state/main.tf
 terraform {
   backend "remote" {
@@ -186,9 +185,11 @@ resource "random_id" "random" {
 
 ### Step 2.3.3
 
-In order to read from our `###_write_state` workspace, we will need to setup a `terraform_remote_state` data source. Data sources are used to retrieve read-only data from sources outside of our project. It supports several cloud providers, but we'll be using `remote` as the `backend`.
+In order to read from our `###_write_state` workspace, we will need to setup a `terraform_remote_state` data source.
+Data sources are used to retrieve read-only data from sources outside of our project.
+It supports several cloud providers, but we'll be using `remote` as the `backend`.
 
-```bash
+```hcl
 # read_state/main.tf
 data "terraform_remote_state" "write_state" {
   backend = "remote"
@@ -205,9 +206,10 @@ data "terraform_remote_state" "write_state" {
 
 ### Step 2.3.4
 
-Now that we have access to our remote `###_write_state` workspace, we can retrieve the `random` output contained within it. We'll also output `random` which we created in this configuration, confirming that they are distinct.
+Now that we have access to our remote `###_write_state` workspace, we can retrieve the `random` output contained within it.
+We'll also output `random` which we created in this configuration, confirming that they are distinct.
 
-```bash
+```hcl
 # read_state/main.tf
 output "random" {
   value = random_id.random.hex
@@ -226,15 +228,10 @@ Run `init` again to install the necessary supporting files.
 
 ```shell
 terraform init
-```
-
-Run `apply` to see the output.
-
-```shell
 terraform apply -auto-approve
 ```
 
-```
+```text
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Outputs:
@@ -242,4 +239,5 @@ random = c1597ca0fbba3997
 write_state_random = 0de9168d0b78ead6
 ```
 
-It worked! You've now successfully stored your states remotely and read from those remote states.
+It worked!
+You've now successfully stored your states remotely and read from those remote states.
