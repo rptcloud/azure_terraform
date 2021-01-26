@@ -115,7 +115,7 @@ resource "azurerm_network_interface" "training" {
   count               = var.num_vms
 # ...  
 
-resource "azure_virtual_machine" "training" {
+resource "azurerm_virtual_machine" "training" {
   count        = var.num_vms
   name         = "${var.prefix}vm-${count.index + 1}"
 # ...
