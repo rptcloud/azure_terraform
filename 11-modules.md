@@ -12,15 +12,16 @@ If you haven't already, `terraform destroy` your previous work.
 
 Create and change directory into a folder specific to this challenge.
 
-For example: `vm-module`
+For example: `lab_exercise`
 
-In order to organize your code inside the `vm-module` directory, create the following folder structure with `main.tf`, `variables.tf` and `terraform.tfvars` files.
+In order to organize your code inside the `lab_exercise` directory, create the following folder structure with `main.tf`, `variables.tf` and `terraform.tfvars` files.
 
 ```sh
-vm-module
+lab_exercise
 ├── main.tf
-├── my-linux-vm
-│   └── main.tf
+├── modules
+│   └── my-linux-vm
+|          └── main.tf
 ├── terraform.tfvars
 └── variables.tf
 ```
