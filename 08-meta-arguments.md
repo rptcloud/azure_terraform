@@ -129,6 +129,10 @@ zero-indexed) and the variable itself.
 
 Remember to also add the variable declaration to your `terraform.tfvars` accordingly.
 
+```hcl
+num_vms = 1
+```
+
 ### Step 8.3.2
 
 Run `terraform apply` in the terraform directory. No changes should be detected as the _values_ have not changed:
