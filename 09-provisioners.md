@@ -29,7 +29,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   provisioner "file" {
     connection {
-      host     = azurerm_public_ip.training[count.index].fqdn
+      host     = azurerm_public_ip.training.fqdn
       type     = "ssh"
       user     = var.admin_username
       password = var.admin_password
@@ -41,7 +41,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   provisioner "remote-exec" {
     connection {
-      host     = azurerm_public_ip.training[count.index].fqdn
+      host     = azurerm_public_ip.training.fqdn
       type     = "ssh"
       user     = var.admin_username
       password = var.admin_password
