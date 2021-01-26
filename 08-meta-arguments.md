@@ -97,14 +97,16 @@ Plan: 2 to add, 0 to change, 1 to destroy.
 
 ### Step 8.3.1
 
-Update `main.tf` and `variables.tf` to add a new variable definition, and use it:
+Update `variables.tf` to add a new variable definition, and use it:
 
 ```hcl
 # ...
 variable "num_vms" {
   default = 2
 }
-
+```
+Update `main.tf`
+```hcl
 resource "azurerm_public_ip" "training" {
   count                   = var.num_vms
 # ...
