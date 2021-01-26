@@ -8,6 +8,8 @@ In this challenge, you will create a module to contain a scalable virtual machin
 
 ### Create Folder Structure
 
+If you haven't already, `terraform destroy` your previous work.
+
 Create and change directory into a folder specific to this challenge.
 
 For example: `vm-module`
@@ -15,17 +17,17 @@ For example: `vm-module`
 In order to organize your code inside the `vm-module` directory, create the following folder structure with `main.tf`, `variables.tf` and `terraform.tfvars` files.
 
 ```sh
-├ main.tf
-├ variables.tf
-├ terraform.tfvars
-└── modules
-    └── my_linux_vm
-        └── main.tf
+vm-module
+├── main.tf
+├── my-linux-vm
+│   └── main.tf
+├── terraform.tfvars
+└── variables.tf
 ```
 
 ### Create the Module
 
-Inside the `my_linux_vm` module folder there should be a `main.tf` file with the following contents:
+Inside the `my_linux_vm` module folder create a `main.tf` file with the following contents:
 
 > Note: This is very similar to the original VM lab.
 
@@ -159,7 +161,7 @@ username = "Plankton"
 
 ### Create the Module declaration in Root
 
-Update `main.tf` whithin the root directory to declare your module, it could look similar to this:
+Update the root `main.tf` to declare your module, it should look similar to this:
 
 ```hcl
 module "myawesomelinuxvm-a" {
@@ -347,3 +349,4 @@ Once complete, run a `terraform destroy` to tear down the infrastructure.
 - [Using Terraform Modules](https://www.terraform.io/docs/modules/usage.html)
 - [Source Terraform Modiules](https://www.terraform.io/docs/modules/sources.html)
 - [Public Module Registry](https://www.terraform.io/docs/registry/index.html)
+- [locals](https://learn.hashicorp.com/tutorials/terraform/locals)
