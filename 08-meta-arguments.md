@@ -29,7 +29,7 @@ resource "azurerm_virtual_machine" "training" {
 The name of the storage disk also needs to be updated to reflect the use of count: 
 
 storage_os_disk {
-    name              = "###disk-${count.index + 1}"
+    name              = "${var.prefix}disk-${count.index + 1}"
   # ... leave the rest of the resource block unchanged...
 ```
 
@@ -38,22 +38,22 @@ as well as the public_ip, network interface
 ```hcl
 resource "azurerm_public_ip" "training" {
   count                   = 2
-  name                    = "azureuser###ip-${count.index + 1}"
+  name                    = "azureuser${var.prefix}ip-${count.index + 1}"
   location                = azurerm_resource_group.training.location
   resource_group_name     = azurerm_resource_group.training.name
   allocation_method       = "Dynamic"
   idle_timeout_in_minutes = 30
-  domain_name_label       = "azureuser###domain${count.index + 1}"
+  domain_name_label       = "azureuser${var.prefix}domain${count.index + 1}"
 }
 
 resource "azurerm_network_interface" "training" {
   count               = 2
-  name                = "azureuser###ni-${count.index + 1}"
+  name                = "azureuser${var.prefix}ni-${count.index + 1}"
   location            = azurerm_resource_group.training.location
   resource_group_name = azurerm_resource_group.training.name
 
   ip_configuration {
-    name                          = "azureuser###ip"
+    name                          = "azureuser${var.prefix}ip"
     subnet_id                     = azurerm_subnet.training.id
     private_ip_address_allocation = "dynamic"
     #private_ip_address            = "10.0.2.5"
