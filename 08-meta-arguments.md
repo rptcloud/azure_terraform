@@ -132,7 +132,7 @@ zero-indexed) and the variable itself.
 Remember to also add the variable declaration to your `terraform.tfvars` accordingly.
 
 ```hcl
-num_vms = 1
+num_vms = 2
 ```
 
 ### Step 8.3.2
