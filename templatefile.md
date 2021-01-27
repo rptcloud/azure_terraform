@@ -14,6 +14,7 @@ This lab demonstrates the use of the `templatefile` to read a file at the given 
 Build the dashboard using the Azure Virtual Machine Module
 
 Create a new directory for this lab and create a `main.tf` with the following:
+*make sure to update ### with your initials
 
 ```hcl
 provider "azurerm" {
@@ -38,7 +39,7 @@ resource "azurerm_resource_group" "my-group" {
 }
 
 resource "azurerm_dashboard" "my-board" {
-  name                = "my-cool-dashboard"
+  name                = "###-cool-dashboard"
   resource_group_name = azurerm_resource_group.my-group.name
   location            = azurerm_resource_group.my-group.location
   tags = {
