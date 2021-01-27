@@ -16,31 +16,32 @@ Create a new json file called `web-visitors.json` with the following builder.
 ```json
 {
     "variables": {
-    "azure_client_id": "{{ env `ARM_CLIENT_ID` }}",
-    "azure_client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
-    "azure_subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
-    "azure_resource_group": "###-myrg"
-  },
-     "builders": [
-  {
-    "name": "azure_ubuntu",
-    "type": "azure-arm",
-    "client_id": "{{ user `azure_client_id` }}",
-    "client_secret": "{{ user `azure_client_secret` }}",
-    "subscription_id": "{{ user `azure_subscription_id` }}",
-    "managed_image_resource_group_name": "{{ user `azure_resource_group` }}",
-    "location": "East US",
-    "image_publisher": "Canonical",
-    "image_offer": "UbuntuServer",
-    "image_sku": "18.04-LTS",
-    "os_type": "Linux",
-    "ssh_username": "packer",
-    "managed_image_name": "hashistack-ubuntu-{{timestamp}}",
-    "azure_tags": {
-      "Product": "Hashistack",
-      "App": "MyApp"
-    }
-  },
+      "azure_client_id": "{{ env `ARM_CLIENT_ID` }}",
+      "azure_client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
+      "azure_subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
+      "azure_resource_group": "###-myrg"
+    },
+    "builders": [
+      {
+        "name": "azure_ubuntu",
+        "type": "azure-arm",
+        "client_id": "{{ user `azure_client_id` }}",
+        "client_secret": "{{ user `azure_client_secret` }}",
+        "subscription_id": "{{ user `azure_subscription_id` }}",
+        "managed_image_resource_group_name": "{{ user `azure_resource_group` }}",
+        "location": "East US",
+        "image_publisher": "Canonical",
+        "image_offer": "UbuntuServer",
+        "image_sku": "18.04-LTS",
+        "os_type": "Linux",
+        "ssh_username": "packer",
+        "managed_image_name": "hashistack-ubuntu-{{timestamp}}",
+        "azure_tags": {
+          "Product": "Hashistack",
+          "App": "MyApp"
+        }
+      }
+    ],
     "provisioners": [
       {
         "type": "shell",
