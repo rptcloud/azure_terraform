@@ -292,6 +292,15 @@ Add the follwing content to the `dash.tpl` file:
 3. Update the dashboard_properties attribute to utilize a `templatefile` stanza.
 
 ```hcl
+dashboard_properties = <<DASH
+{
+#including the content# ...
+}
+DASH
+```
+Replace with the following
+
+```hcl
  dashboard_properties = templatefile("${path.module}/templates/dash.tpl",
     {
       md_content = "Variable content here!",
