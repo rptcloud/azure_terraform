@@ -11,7 +11,7 @@ To build an image packer utilizes a JSON file with the following sections...
 * You can have multiple builder types in one file.
 
 Below is an example of a basic builder for an AWS and GCP Image.
-Create a new json file called `web-vistors.json` with the following builder.
+Create a new json file called `web-visitors.json` with the following builder.
 
 ```json
 {
@@ -76,11 +76,11 @@ Once the file is ready we will need to dothe following steps...
 Validate your configuration.
 
 ```shell
-> packer validate web-vistors.json
+> packer validate web-visitors.json
 ```
 
 ```shell
-> packer build web-vistors.json
+> packer build web-visitors.json
 ```
 
 ##### Buildig Images in Parallel Across Regions
