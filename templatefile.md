@@ -174,7 +174,7 @@ Then perform an `init`, `plan`, and `apply`.
 For example: `/terraform/azure/template_lab` which contains:
 ```sh
 ├ main.tf
-└── templates
+└ templates
     └── dash.tpl
 ```
 
