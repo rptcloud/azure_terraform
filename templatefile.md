@@ -33,7 +33,7 @@ variable "video_link" {
 data "azurerm_subscription" "current" {}
 
 resource "azurerm_resource_group" "my-group" {
-  name     = "ghm_dashboard"
+  name     = "###_dashboard"
   location = "East US"
 }
 
