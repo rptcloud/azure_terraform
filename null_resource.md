@@ -124,9 +124,9 @@ variable "num_vms" {
 Update or create your `terraform.tfvars` with the following:
 
 ```hcl
-resource_group_name = "sccx-resourcegroup"
+resource_group_name = "###-resourcegroup"
 EnvironmentTag = "staging"
-prefix = "sccx"
+prefix = "###"
 location = "East US"
 computer_name = "myserver"
 admin_username = "testadmin"
