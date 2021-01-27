@@ -151,12 +151,12 @@ resource "null_resource" "web_cluster" {
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = element(azurerm_public_ip.publicip.*.ip_address, 0)
+    host = element(azurerm_public_ip.training.*.ip_address, 0)
   }
 
   provisioner "local-exec" {
     # Bootstrap script called with private_ip of each node in the clutser
-    command = "echo ${join(" Cluster local IP is : ", azurerm_public_ip.publicip.*.ip_address)}"
+    command = "echo ${join(" Cluster local IP is : ", azurerm_public_ip.training.*.ip_address)}"
   }
 }
 ```
