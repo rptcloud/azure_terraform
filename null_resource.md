@@ -10,21 +10,131 @@ This lab demonstrates the use of the `null_resource`. Instances of `null_resourc
 We'll demonstrate how `null_resource` can be used to take action on a set of existing resources that are specified within the `triggers` argument
 
 
-## Task 1: Create a Google Instance using Terraform
+## Task 1: Create a Azure Virtual Machine using Terraform
 ### Step 11.1.1: Create Server instances
 
-Build the web servers using the Azure Virtual Machine Module (previous labs)
+Build the web servers using the Azure Virtual Machine Module
 
-You can see this now if you run `terraform apply`:
+Update or create your `main.tf` with the following:
 
-```text
-...
+```hcl
+provider "azurerm" {
+  features {}
+}
 
-Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+resource "azurerm_resource_group" "training" {
+  name     = var.resource_group_name
+  location = var.location
+}
 
-...
+resource "azurerm_virtual_network" "training" {
+  name                = "azureuser${var.prefix}vn"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+}
+
+resource "azurerm_subnet" "training" {
+  name                 = "azureuser${var.prefix}sub"
+  resource_group_name  = azurerm_resource_group.training.name
+  virtual_network_name = azurerm_virtual_network.training.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+
+
+resource "azurerm_public_ip" "training" {
+  count                   = var.num_vms
+  name                    = "azureuser${var.prefix}ip-${count.index + 1}"
+  location                = azurerm_resource_group.training.location
+  resource_group_name     = azurerm_resource_group.training.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+  domain_name_label       = "azureuser${var.prefix}domain${count.index + 1}"
+}
+
+resource "azurerm_network_interface" "training" {
+  count               = var.num_vms
+  name                = "azureuser${var.prefix}ni-${count.index + 1}"
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+
+  ip_configuration {
+    name                          = "azureuser${var.prefix}ip"
+    subnet_id                     = azurerm_subnet.training.id
+    private_ip_address_allocation = "dynamic"
+    public_ip_address_id          = azurerm_public_ip.training[count.index].id
+  }
+}
+
+resource "azurerm_virtual_machine" "training" {
+  count                 = var.num_vms
+  name                  = "${var.prefix}vm-${count.index + 1}"
+  location              = azurerm_resource_group.training.location
+  resource_group_name   = azurerm_resource_group.training.name
+  network_interface_ids = [azurerm_network_interface.training[count.index].id]
+  vm_size               = "Standard_F2"
+
+  delete_os_disk_on_termination = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "${var.prefix}disk-${count.index + 1}"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = var.computer_name
+    admin_username = var.admin_username
+    admin_password = var.admin_password
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+
+  tags = {
+    environment = var.EnvironmentTag
+  }
+}
+
+```
+Update or create your `variables.tf` with the following:
+
+```hcl
+variable "resource_group_name" {}
+variable "EnvironmentTag" {}
+variable "prefix" {}
+variable "location" {
+  default = "East US"
+}
+variable "computer_name" {}
+variable "admin_username" {}
+variable "admin_password" {}
+variable "num_vms" {
+  default = 2
+}
+```
+Update or create your `terraform.tfvars` with the following:
+
+```hcl
+resource_group_name = "sccx-resourcegroup"
+EnvironmentTag = "staging"
+prefix = "sccx"
+location = "East US"
+computer_name = "myserver"
+admin_username = "testadmin"
+admin_password = "Password1234!"
+num_vms = 1
 ```
 
+Then perform an `init`, `plan`, and `apply`.
 
 ## Task 2: Use `null_resource` with a Azure Virtual Machine to take action with `triggers`
 ### Step 11.2.1: Use `null_resource`
@@ -35,18 +145,18 @@ Add `null_resource` stanza to the `main.tf`.  Notice that the trigger for this r
 resource "null_resource" "web_cluster" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    web_cluster_size = length(azurerm_virtual_machine.training)
+    web_cluster_size = join(",",azurerm_virtual_machine.training.*.id)
   }
 
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = element(google_compute_instance.web[*].network_interface[0].access_config[0].nat_ip, 0)
+    host = element(azurerm_public_ip.publicip.*.ip_address, 0)
   }
 
   provisioner "local-exec" {
     # Bootstrap script called with private_ip of each node in the clutser
-    command = "echo ${join(" Cluster local IP is : ", google_compute_instance.web[*].network_interface.0.network_ip)}"
+    command = "echo ${join(" Cluster local IP is : ", azurerm_public_ip.publicip.*.ip_address)}"
   }
 }
 ```
