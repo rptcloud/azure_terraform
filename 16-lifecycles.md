@@ -109,10 +109,6 @@ resource "azurerm_public_ip" "main" {
   allocation_method   = "Static"
 }
 
-output "vm-password" {
-  value       = random_password.password.result
-  description = "Dynamically generated password to access the VM."
-}
 output "private-ip" {
   value       = azurerm_network_interface.main.private_ip_address
   description = "Private IP Address"
