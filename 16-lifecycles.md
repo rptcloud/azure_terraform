@@ -28,17 +28,12 @@ Place the following configuration in your `main.tf` file to deploy your virtual 
 ```hcl
 variable "prefix" {}
 variable "location" {}
-variable "username" {}
+variable "admin_username" {}
+variable "admin_password" {}
 variable "vm_size" {}
 
 provider "azurerm" {
   features {}
-}
-
-resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!"
 }
 
 resource "azurerm_resource_group" "main" {
@@ -79,6 +74,8 @@ resource "azurerm_virtual_machine" "main" {
   resource_group_name   = azurerm_resource_group.main.name
   network_interface_ids = [azurerm_network_interface.main.id]
   vm_size               = var.vm_size
+  
+  delete_os_disk_on_termination = true
 
   storage_image_reference {
     publisher = "Canonical"
@@ -100,8 +97,8 @@ resource "azurerm_virtual_machine" "main" {
 
   os_profile {
     computer_name  = "${var.prefix}myvm"
-    admin_username = var.username
-    admin_password = random_password.password.result
+    admin_username = var.admin_username
+    admin_password = var.admin_password
   }
 }
 
@@ -130,9 +127,11 @@ output "public-ip" {
 Update your `terraform.tfvars` file with the following information, replacing ```###``` with your intials
 
 ```hcl
-prefix   = "###"
-location = "East US"
-username = "Plankton"
+prefix              = "###"
+location            = "East US"
+admin_username      = "testadmin"
+admin_password      = "Password1234!"
+vm_size             = "Standard_F2"
 ```
 
 - Run a `terraform init`
@@ -168,13 +167,17 @@ Answer `yes` to proceed with the replacement of the instances.
 
 ### Step 6.1.2: Use `create_before_destroy` and rename the instances again
 
-Add a `lifecycle` configuration to the `google_compute_instance` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, added in the previous step.
+Add a `lifecycle` configuration to the `azurerm_virtual_machine` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, added in the previous step.
 
 ```hcl
 resource "azurerm_virtual_machine" "main" {
   name         = "${var.prefix}-my-vm"
   # ...
-
+  
+  storage_os_disk {
+    name              = "${var.prefix}myvm-osdisk"
+    ...
+    
   lifecycle {
     create_before_destroy = true
   }
