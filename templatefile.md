@@ -167,7 +167,16 @@ Then perform an `init`, `plan`, and `apply`.
 ### Step 1.2.1: Use `templatefile`
 
 1. Create a `templates` directory in the same directory as your `main.tf`
-2. Create a `dash.tpl` file inside the `templates` directory with the following content:
+2. Create a `dash.tpl` file inside the `templates` directory.
+
+For example: `/terraform/azure/template_lab` which contains:
+```sh
+├ main.tf
+└── templates
+    └── dash.tpl
+```
+
+Add the follwing content to the `dash.tpl` file:
 
 ```txt
 {
