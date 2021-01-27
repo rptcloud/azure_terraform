@@ -14,7 +14,8 @@ This lab demonstrates the use of the `templatefile` to read a file at the given 
 Build the dashboard using the Azure Virtual Machine Module
 
 Create a new directory for this lab and create a `main.tf` with the following:
-*make sure to update ### with your initials
+
+- make sure to update ### with your initials
 
 ```hcl
 provider "azurerm" {
