@@ -2,12 +2,10 @@
 
 Duration: 15 minutes
 
-This lab demonstrates the use of the `templatefile`. Instances of `null_resource` are treated like normal resources, but they don't do anything. Like with any other resource, you can configure provisioners and connection details on a null_resource. You can also use its triggers argument and any meta-arguments to control exactly where in the dependency graph its provisioners will run.
+This lab demonstrates the use of the `templatefile` to read a file at the given path and renders its content as a template using a supplied set of template variables.
 
 - Task 1: Create a Azure Dashboard via Terraform
 - Task 2: Use `templatefile` to render the dasboard layout.
-
-We'll demonstrate how `templatefile` to read a file at the given path and renders its content as a template using a supplied set of template variables.
 
 
 ## Task 1: Create a Dashboard using Terraform
