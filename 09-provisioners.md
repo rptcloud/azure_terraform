@@ -6,11 +6,16 @@ In this challenge, you will create a Azure Virtual Machine but this time layer i
 
 ## Background
 
-Terraform [provisioners](https://www.terraform.io/docs/provisioners/index.html) help you do additional setup and configuration when a resource is created or destroyed. You can move files, run shell scripts, and install software.
+Terraform [provisioners](https://www.terraform.io/docs/provisioners/index.html) help you do additional setup and configuration when a resource is created or destroyed.
+You can move files, run shell scripts, and install software.
 
-Provisioners are not intended to maintain desired state and configuration for existing resources. For that purpose, you should use one of the many tools for configuration management, such as [Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and PowerShell [Desired State Configuration](https://docs.microsoft.com/en-us/powershell/dsc/overview/overview). (Terraform includes a [chef](https://www.terraform.io/docs/provisioners/chef.html) provisioner.)
+Provisioners are not intended to maintain desired state and configuration for existing resources.
+For that purpose, you should use one of the many tools for configuration management, such as [Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and PowerShell [Desired State Configuration](https://docs.microsoft.com/en-us/powershell/dsc/overview/overview).
+Terraform includes [provisioners](https://www.terraform.io/docs/language/resources/provisioners/index.html) for Chef, Habitat, Puppet, and Salt.
 
-An imaged-based infrastructure, such as images created with [Packer](https://www.packer.io), can eliminate much of the need to configure resources when they are created. In this common scenario, Terraform is used to provision infrastructure based on a custom image. The image is managed as code.
+An imaged-based infrastructure, such as images created with [Packer](https://www.packer.io), can eliminate much of the need to configure resources when they are created.
+In this common scenario, Terraform is used to provision infrastructure based on a custom image.
+The image is managed as code.
 
 ## How To
 
@@ -18,15 +23,14 @@ An imaged-based infrastructure, such as images created with [Packer](https://www
 
 Provisioners are defined on resources, most commonly a new instance of a virtual machine or container.
 
-The complete configuration for this example is given below. By now, you should be familiar with most of the contents.
+The complete configuration for this example is given below.
+By now, you should be familiar with most of the contents.
 
 Notice that the azurerm_virtual_machine resource contains two provisioner blocks:
 
 ```hcl
 resource "azurerm_virtual_machine" "vm" {
-
-    <...snip...>
-
+...
   provisioner "file" {
     connection {
       host     = azurerm_public_ip.training.fqdn
@@ -59,20 +63,24 @@ resource "azurerm_virtual_machine" "vm" {
 }
 ```
 
-As this example shows, you can define more than one provisioner in a resource block. The [file](https://www.terraform.io/docs/provisioners/file.html) and [remote-exec](https://www.terraform.io/docs/provisioners/remote-exec.html) providers are used to perform two simple setup tasks:
+As this example shows, you can define more than one provisioner in a resource block.
+The [file](https://www.terraform.io/docs/provisioners/file.html) and [remote-exec](https://www.terraform.io/docs/provisioners/remote-exec.html) providers are used to perform two simple setup tasks:
 
 -   File copies a python file from the machine that is running Terraform to the new VM instance.
 -   Remote-exec runs commands to start a python flask app.
 
-Both providers need a [connection](https://www.terraform.io/docs/provisioners/connection.html) to the new virtual machine to do their jobs. To simplify things, the example uses password authentication. In practice, you are more likely to use SSH keys, and for WinRM connections, certificates to authenticate.
+Both providers need a [connection](https://www.terraform.io/docs/provisioners/connection.html) to the new virtual machine to do their jobs.
+To simplify things, the example uses password authentication.
+In practice, you are more likely to use SSH keys (or for WinRM connections, use certificates) to authenticate.
 
 ### Running provisioners
 
-Provisioners run when a resource is created, or a resource is destroyed. Provisioners do not run during update operations. The example configuration for this section defines two provisioners that run only when a new virtual machine instance is created. If the virtual machine instance is later modified or destroyed, the provisioners will not run.
+Provisioners run when a resource is created, or a resource is destroyed.
+Provisioners do not run during update operations.
+The example configuration for this section defines two provisioners that run only when a new virtual machine instance is created.
+If the virtual machine instance is later modified or destroyed, the provisioners will not run.
 
-Although we don't show it in the example configuration, there is a way to define provisioners that run when a resource is destroyed.
-
-The full configuration is:
+For this lab, the full configuration is:
 
 ```hcl
 variable "prefix" {
@@ -174,6 +182,7 @@ resource "azurerm_virtual_machine" "vm" {
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = "Standard_DS1_v2"
 
+  delete_os_disk_on_termination = true
   storage_os_disk {
     name              = "${var.prefix}OsDisk"
     caching           = "ReadWrite"
@@ -237,7 +246,7 @@ output "app-URL" {
 To run the example configuration with provisioners:
 
 1.  Copy the configuration to a file named `main.tf`. It should be the only `.tf` file in the folder.
-2.  Create a `terraform.tfvars` with the following items, replacing ### with your initials
+2.  Create a `terraform.tfvars` with the following items, replacing **`###`** with your initials
    ```hcl
    prefix              = "###"
    location            = "East US"
@@ -290,32 +299,81 @@ Apply complete!
 Continue the procedure from above by doing the following:
 
 1.  Run `terraform show` to examine the current state.
-2.  Update the image src in the flask app to return a different image (Look for "http://placekitten.com/200/300").
+2.  Update the image src in the flask app to return a different image (Repalce `http://placekitten.com/200/300` - try `https://images.unsplash.com/photo-1570534536531-c3def02ad855`).
 3.  Update your provisioner text file and run a `terraform plan`. Were the results as expected?
 
-### Clean up
-
-When you are done, run `terraform destroy` to remove everything we created
 
 ### Failed provisioners and tainted resources
 
-Provisioners sometimes fail to run properly. By the time the provisioner is run, the resource has already been physically created. If the provisioner fails, the resource will be left in an unknown state. When this happens, Terraform will generate an error and mark the resource as "tainted." A resource that is tainted isn't considered safe to use.
+Provisioners sometimes fail to run properly.
+By the time the provisioner is run, the resource has already been physically created.
+If the provisioner fails, the resource will be left in an unknown state.
+When this happens, Terraform will generate an error and mark the resource as "tainted."
+A resource that is tainted isn't considered safe to use.
 
-When you generate your next execution plan, Terraform will not attempt to restart provisioning on the tainted resource because it isn't guaranteed to be safe. Instead, Terraform will remove any tainted resources and create new resources, attempting to provision them again after creation.
+When you generate your next execution plan, Terraform will not attempt to restart provisioning on the tainted resource because it isn't guaranteed to be safe.
+Instead, Terraform will remove any tainted resources and create new resources, attempting to provision them again after creation.
 
-You might wonder why Terraform doesn't destroy the tainted resource during apply, to avoid leaving a resource in an unknown state. Terraform doesn't roll back tainted resources because that action was not in the execution plan. The execution plan says that a resource will be created, but not that it might be deleted. If you create an execution plan with a tainted resource, however, the plan will clearly state that the resource will be destroyed because it is tainted.
+You might wonder why Terraform doesn't destroy the tainted resource during apply, to avoid leaving a resource in an unknown state.
+Terraform doesn't roll back tainted resources because that action was not in the execution plan.
+The execution plan says that a resource will be created, but not that it might be deleted.
+If you create an execution plan with a tainted resource, however, the plan will clearly state that the resource will be destroyed because it is tainted.
 
+For our tainting lab, we will use our `vm` from the above configuration.
+We will list our resources, taint the appropriate `vm` resource, and apply.
+
+List the resources in our state:
+```shell
+terraform state list
+```
+
+Find the appropriate resource:
+```text
+...
+azurerm_subnet.subnet
+azurerm_virtual_machine.vm
+azurerm_virtual_network.vnet
+```
+
+Taint our VM:
+```shell
+terraform taint azurerm_virtual_machine.vm
+```
+
+```text
+Resource instance azurerm_virtual_machine.vm has been marked as tainted.
+```
+
+Run an `apply` and confirm:
+```shell
+terraform apply
+```
+
+```text
+Plan: 1 to add, 0 to change, 1 to destroy.
+...
+Outputs:
+
+app-URL = http://ccqpublicipprovision.eastus.cloudapp.azure.com:8000
+```
+
+Go to the URL provided in the output.
+Which image do you see now?
 
 ### Destroy Provisioners
 
-Provisioners can also be defined that run only during a destroy operation. These are known as [destroy-time provisioners](https://www.terraform.io/docs/provisioners/index.html#destroy-time-provisioners). Destroy provisioners are useful for performing system cleanup, extracting data, etc.
+Provisioners can also be defined that run only during a destroy operation.
+These are known as [destroy-time provisioners](https://www.terraform.io/docs/language/resources/provisioners/syntax.html#destroy-time-provisioners).
+Destroy provisioners are useful for performing system cleanup, extracting data, etc.
 
 The following code snippet shows how a destroy provisioner is defined:
 
 ```
 provisioner "remote-exec" {
     when = "destroy"
-
-    <...snip...>
-
+...
 ```
+
+### Clean up
+
+When you are done, run `terraform destroy` to remove everything we created.
