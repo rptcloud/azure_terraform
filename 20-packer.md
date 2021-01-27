@@ -16,8 +16,11 @@ Create a new json file called `web-visitors.json` with the following builder.
 ```json
 {
     "variables": {
-      "gcp_source_image": "debian-9-stretch-v20200805"
-    },
+    "azure_client_id": "{{ env `ARM_CLIENT_ID` }}",
+    "azure_client_secret": "{{ env `ARM_CLIENT_SECRET` }}",
+    "azure_subscription_id": "{{ env `ARM_SUBSCRIPTION_ID` }}",
+    "azure_resource_group": "###-myrg"
+  },
      "builders": [
   {
     "name": "azure_ubuntu",
@@ -82,56 +85,6 @@ Validate your configuration.
 ```shell
 > packer build web-visitors.json
 ```
-
-##### Buildig Images in Parallel Across Regions
-
-
-```json
-{
-    "variables": {
-      "aws_source_ami": "ami-039a49e70ea773ffc",
-      "gcp_source_image": "debian-9-stretch-v20200805"
-    },
-    "builders": [
-      {
-        "type": "googlecompute",
-        "account_file":"account.json",
-        "project_id": "terraformtraining1",
-        "source_image": "{{user `gcp_source_image`}}",
-        "ssh_username": "packer",
-        "zone": "us-east1-b"
-      },
-      {
-        "type": "amazon-ebs",
-        "region": "us-east-1",
-        "source_ami": "{{user `aws_source_ami`}}",
-        "instance_type": "t1.micro",
-        "ssh_username": "ubuntu",
-        "ssh_pty": "true",
-        "ami_name": "tmp-{{timestamp}}",
-        "tags": {
-          "Created-by": "Packer",
-          "OS_Version": "Ubuntu",
-          "Release": "Latest"
-        }
-      }
-    ],
-    "provisioners": [
-      {
-        "type": "shell",
-        "inline": [
-          "mkdir ~/src",
-          "cd ~/src",
-          "sudo apt-get -y install git",
-          "git clone https://github.com/hashicorp/demo-terraform-101.git",
-          "cp -R ~/src/demo-terraform-101/assets /tmp",
-          "sudo sh /tmp/assets/setup-web.sh"
-        ]
-      }
-    ]
-  }
-```
-
 ##### Resources
 * Packer [Docs](https://www.packer.io/docs/index.html)
 * Packer [CLI](https://www.packer.io/docs/commands/index.html)
