@@ -192,7 +192,27 @@ Success! You now have a valid sentinel policy!
 ### Write another test
 
 Create a new file `test/azure-restrict-vm-size/fail.json`.
+
+```json
+{
+  "mock": {
+    "tfplan": "mock-fail-tfplan.sentinel"
+  },
+  "test": {
+    "main": false
+  }
+}
+```
+
 Create a new file `test/azure-restrict-vm-size/mock-fail-tfplan.sentintel`.
+
+Copy the mock from you `mock-tfplan.sentinel` and `mock-fail-tfplan.sentintel`
+
+Find and replace the vm size with the following.
+
+```json
+"vm_size":  "Standard_s3",
+```
 
 Update both files to represent a negative test.
 
