@@ -91,11 +91,23 @@ main = rule {
 
 __Policy Sets__: Select the Policy Set we just created "MyWorkspacePolicies".
 
-### Run a Plan
+### Add a resource group to your `ptfe-workspace-modules/main.tf` repository
+
+In your `main.tf` add a new resource group
+
+```HCL
+resource "azurerm_resource_group" "training" {
+  name     = "###-sentinel-resourcegroup"
+  location = "East US"
+}
+```
+Commit the change to execute the plan. 
+
+### Manually Run a Plan if the commit did not kick off a plan
 
 > Note: be sure to discard any existing plans.
 
-Navigate to your "ptfe-workspace" and queue a plan.
+Navigate to your "ptfe-workspace-modules" and queue a plan.
 
 ### Review the Plan
 
