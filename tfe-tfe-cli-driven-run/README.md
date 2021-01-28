@@ -7,7 +7,7 @@ In this lab, we will invoke a Terraform run on TFE via your local Terraform clie
 
 ## How To
 
-1. In the TFE UI, create a new Workspace. Click `skip this step` within the **Connect to VCS** section. Name the Workspace something unique, such as `###-tfecli-test-run`.
+1. In the TFE UI, create a new Workspace. Click **CLI-Driven Workflow** . Name the Workspace something unique, such as `###-tfecli-test-run`.
 
 2. Still in the TFE UI, within the **Variables** section of your newly created TFE Workspace, create the four necessary environment variables for TFE to authenticate to Azure (and mark them as `sensitive`):
 
