@@ -10,7 +10,7 @@ In this challenge, you will see how you can apply policies around your Azure sub
 
 In the Terraform Enterprise web app, click on your organization -> Organization Settings
 
-<https://tap-tfe.digitalinnovation.dev/YOUR_ORG_NAME/settings/policies>
+<https://app.terraform.io/YOUR_ORG_NAME/settings/policies>
 
 ![](img/sentinel-policy-add.png)
 
