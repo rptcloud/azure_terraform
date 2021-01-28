@@ -100,7 +100,7 @@ Navigate back to your "ptfe-workspace-modules" workspace.
 
 Set the Terraform Variables:
 
-- 'name' - A unique environment name such as `myusername`
+- 'name' - A unique environment name such as `###env`
 - 'location' - An Azure region such as `eastus` or `centralus`
 - 'username' (sensitive) - A username for the VM's
 > Note: this can not be "admin"
