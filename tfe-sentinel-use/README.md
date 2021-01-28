@@ -99,6 +99,10 @@ In your `main.tf` add a new resource group
 resource "azurerm_resource_group" "training" {
   name     = "###-sentinel-resourcegroup"
   location = "East US"
+  
+  tags = {
+    "test" = "test"  
+  }
 }
 ```
 Commit the change to execute the plan. 
