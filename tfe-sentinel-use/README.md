@@ -40,7 +40,7 @@ __Scope of Policies:__ Select -> "Policies enforced on selected workspaces"
 
 __Policies:__ Select the Policy created above -> Click "Add"
 
-__Workspaces:__ Select the workspace you created in the `private-module-registry` lab ("ptfe-workspace-modules") -> Click "Add"
+__Workspaces:__ Select the workspace you created in the `tfe-workspaces` lab ("ptfe-workspace") -> Click "Add"
 
 ### Create Policy
 
@@ -91,27 +91,11 @@ main = rule {
 
 __Policy Sets__: Select the Policy Set we just created "MyWorkspacePolicies".
 
-### Add a resource group to your `ptfe-workspace-modules/main.tf` repository
-
-In your `main.tf` add a new resource group
-
-```HCL
-resource "azurerm_resource_group" "training" {
-  name     = "###-sentinel-resourcegroup"
-  location = "East US"
-  
-  tags = {
-    "test" = "test"  
-  }
-}
-```
-Commit the change to execute the plan. 
-
-### Manually Run a Plan if the commit did not kick off a plan
+### Manually Run a Plan
 
 > Note: be sure to discard any existing plans.
 
-Navigate to your "ptfe-workspace-modules" and queue a plan.
+Navigate to your "ptfe-workspace" and queue a plan.
 
 ### Review the Plan
 
