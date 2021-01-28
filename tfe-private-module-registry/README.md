@@ -42,7 +42,7 @@ variable "subnet_address_prefixes" {
 }
 
 module "networking" {
-  source  = "tap-tfe.digitalinnovation.dev/YOUR_ORG_NAME/networking/azurerm"
+  source  = "app.terraform.io/YOUR_ORG_NAME/networking/azurerm"
   version = "0.12.0"
 
   name                    = var.name
@@ -100,7 +100,7 @@ Navigate back to your "ptfe-workspace-modules" workspace.
 
 Set the Terraform Variables:
 
-- 'name' - A unique environment name such as `myusername`
+- 'name' - A unique environment name such as `###env`
 - 'location' - An Azure region such as `eastus` or `centralus`
 - 'username' (sensitive) - A username for the VM's
 > Note: this can not be "admin"
@@ -168,7 +168,7 @@ module "webserver" {
 }
 
 module "appserver" {
-  source  = "tap-tfe.digitalinnovation.dev/YOUR_ORG_NAME/appserver/azurerm"
+  source  = "app.terraform.io/YOUR_ORG_NAME/appserver/azurerm"
   version = "0.12.0"
 
   name      = var.name
@@ -180,7 +180,7 @@ module "appserver" {
 }
 
 module "dataserver" {
-  source  = "tap-tfe.digitalinnovation.dev/YOUR_ORG_NAME/dataserver/azurerm"
+  source  = "app.terraform.io/YOUR_ORG_NAME/dataserver/azurerm"
   version = "0.12.0"
 
   name      = var.name
