@@ -219,7 +219,7 @@ resource "azurerm_virtual_machine" "main" {
 Attempt to destroy the existing infrastructure. You should see the error that follows.
 
 ```shell
-terraform destroy -force
+terraform destroy
 ```
 
 ```
