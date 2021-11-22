@@ -161,7 +161,7 @@ Terraform will perform the following actions:
 
 Answer `yes` to proceed with the replacement of the instances.
 
-### Step 6.1.2: Use `create_before_destroy` and rename the instances again
+### Step 6.1.3: Use `create_before_destroy` and rename the instances again
 
 Add a `lifecycle` configuration to the `azurerm_virtual_machine` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, added in the previous step.
 
