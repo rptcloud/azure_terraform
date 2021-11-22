@@ -24,8 +24,6 @@ For example: `cd /workstation/terraform/azure/virtual-machine-scale-set/`.
 
 We will start with a few of the basic resources needed.
 
-Create a `main.tf` file to hold our configuration.
-
 ### Create Variables
 
 Create a file `variables.tf` and add the following configuration:
