@@ -257,7 +257,7 @@ resource "azurerm_virtual_machine" "main" {
 Finally, run `destroy`.
 
 ```shell
-terraform destroy -force
+terraform destroy
 ```
 
 The command should now succeed and your resources should be destroyed.
