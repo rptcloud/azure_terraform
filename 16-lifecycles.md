@@ -142,6 +142,13 @@ Edit your `main.tf` file and add the suffix _renamed_ to the value for `name` as
 resource "azurerm_virtual_machine" "main" {
   name         = "${var.prefix}-my-vm-renamed"
   ...
+ 
+   
+  storage_os_disk {
+    name              = "${var.prefix}myvm-osdisk-renamed"
+    ...
+    
+  
 ```
 
 Run a `terraform apply` to see Terraform will _replace_ your instances by first deleting them and then recreating them:
