@@ -28,6 +28,6 @@ terraform refresh
 
 ```bash
 terraform output public_dns
-ping $(terraform output public_dns)
+ping $(terraform output -raw public_dns)
 ```
 
