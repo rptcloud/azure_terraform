@@ -299,7 +299,7 @@ Apply complete!
 Continue the procedure from above by doing the following:
 
 1.  Run `terraform show` to examine the current state.
-2.  Update the image src in the flask app to return a different image (Repalce `http://placekitten.com/200/300` - try `https://i1.wp.com/www.thedevcoach.co.uk/wp-content/uploads/2020/04/What-is-Terraform.png`).
+2.  Update the image src in the flask app to return a different image (Replace `http://placekitten.com/200/300` - try `https://i1.wp.com/www.thedevcoach.co.uk/wp-content/uploads/2020/04/What-is-Terraform.png`).
 3.  Update your provisioner text file and run a `terraform plan`. Were the results as expected?
 
 
