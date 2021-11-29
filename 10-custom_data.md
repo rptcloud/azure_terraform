@@ -228,6 +228,8 @@ output "app-URL" {
 
 Create a file called `terraform.tfvars` and add the following variables:
 
+Replace "###" with your initials in quotes.
+
 ```sh
 prefix   = "###"
 location = "East US"
