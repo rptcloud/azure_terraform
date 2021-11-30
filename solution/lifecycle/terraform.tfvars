@@ -1,0 +1,5 @@
+prefix         = "ghm"
+location       = "East US"
+admin_username = "testadmin"
+admin_password = "Password1234!"
+vm_size        = "Standard_F2"
