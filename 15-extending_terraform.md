@@ -55,7 +55,11 @@ output "guid" {
 }
 ```
 
+
+
 ```sh
+terraform apply
+
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Outputs:
