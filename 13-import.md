@@ -96,7 +96,7 @@ actions need to be performed.
 Add the following tag configuration to the Resource Group
 
 ```hcl
-resource "azurerm_resource_group" "import" {
+resource "azurerm_resource_group" "my_rg" {
   ...
   tags = {
     terraform = "true"
