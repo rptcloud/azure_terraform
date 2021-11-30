@@ -41,7 +41,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-password = USCx=<D(7+KVWu:o
+password = <sensitive>
 ```
 
 Add the following configuration:
@@ -61,7 +61,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 guid = 84502be0-13fc-4a49-ce02-4ab4e1b493ca
-password = USCx=<D(7+KVWu:o
+password = <sensitive>
 ```
 
 > Note: The password was NOT regenerated, why is this?
