@@ -9,67 +9,70 @@ You'll setup a new project using Terraform Cloud as your backed and use a second
 - Task 2: Create a configuration which stores its state on Terraform Cloud
 - Task 3: Create another Terraform config that reads from the state on Terraform Cloud
 
-## Prerequisites
+## Task 1: Sign up for Terraform Cloud
 
-For this lab, we'll assume that you've installed [Terraform](https://www.terraform.io/downloads.html) and that you have [signed up](https://app.terraform.io/signup/account) for a Terraform Cloud account.
+1. Navigate to [the sign up page](https://app.terraform.io/signup) and create an account for Terraform Cloud. If you already have a TFC account
 
-## Task 1: Create a Terraform Cloud user token
-
-In order to store state remotely on Terraform Cloud, we need to create a user token and configure our local environment to utilize that token.
-
-**NOTE:** Terraform Cloud only works with 0.11.13 or later.
-
-### Step 2.1.1:
-
-**Note:** You can skip this step if you've already created a organization.
-
-[Log in](https://app.terraform.io) to Terraform Cloud and go to the new organization page:
-
-* New users are automatically taken to the new organization page.
-* If your user account is already a member of an organization, open the organization switcher menu in the top navigation bar and click the "Create new organization" button.
-
-Enter a unique organization name and an email address for notifications, then click the "Create organization" button.
-
-![New Organization](images/free-org-creation.png "New Organization")
-
-### Step 2.1.2:
-
-Terraform's CLI needs credentials before it can access Terraform Cloud.
-First we will create the Terraform CLI configuration file:
-
-```shell
-touch ~/.terraformrc
-```
-
-In this file, we will add the following credentials block:
+1. Perform a `terraform login` from your workstation
 
 ```bash
-credentials "app.terraform.io" {
-  token = "REPLACE_ME"
-}
+Terraform will request an API token for app.terraform.io using your browser.
+
+If login is successful, Terraform will store the token in plain text in
+the following file for use by subsequent commands:
+    /home/student/.terraform.d/credentials.tfrc.json
+
+Do you want to proceed?
+  Only 'yes' will be accepted to confirm.
+
+  Enter a value:
 ```
 
-Leave your editor open.
+2. Answer `yes` at the prompt and generate a TFC user token by following the URL provided and copy-paste it into the prompt.
 
-### Step 2.1.3
+```bash
+---------------------------------------------------------------------------------
 
-In your web browser, go to the [tokens section](https://app.terraform.io/app/settings/tokens) of your user settings or click the user icon in the upper right corner, click "User Settings", then click "Tokens" in the left sidebar.
+Open the following URL to access the tokens page for app.terraform.io:
+    https://app.terraform.io/app/settings/tokens?source=terraform-login
 
-Generate a new token by entering a description and clicking the "Generate token" button.
-The new token will appear in a text area below the description field.
 
-Copy the token to the clipboard.
+---------------------------------------------------------------------------------
+```
 
-In your text editor, paste the real token into the token argument, replacing the `REPLACE_ME` placeholder. Save the CLI config file and close your editor.
+1. If the token was entered succesfully you should see the following:
 
-### Step 2.1.4
+```bash
 
-At this point, Terraform can use Terraform Cloud with any Terraform configuration that has enabled the remote backend.
+Retrieved token for user tfcuser
 
-Update the permissions of the CLI config file to `0600` with:
 
-```shell
-chmod 0600 ~/.terraformrc
+---------------------------------------------------------------------------------
+
+                                          -
+                                          -----                           -
+                                          ---------                      --
+                                          ---------  -                -----
+                                           ---------  ------        -------
+                                             -------  ---------  ----------
+                                                ----  ---------- ----------
+                                                  --  ---------- ----------
+   Welcome to Terraform Cloud!                     -  ---------- -------
+                                                      ---  ----- ---
+   Documentation: terraform.io/docs/cloud             --------   -
+                                                      ----------
+                                                      ----------
+                                                       ---------
+                                                           -----
+                                                               -
+
+
+   New to TFC? Follow these steps to instantly apply an example configuration:
+
+   $ git clone https://github.com/hashicorp/tfc-getting-started.git
+   $ cd tfc-getting-started
+   $ scripts/setup.sh
+
 ```
 
 ## Task 2: Create a configuration which stores its state on Terraform Cloud
