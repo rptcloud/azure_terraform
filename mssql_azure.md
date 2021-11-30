@@ -83,7 +83,7 @@ module "mssql-server" {
 }
 ```
 
-Replace the `start_ip_addrerss` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
+Replace the `start_ip_address` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
 
 ```shell
 curl ifconfig.me
