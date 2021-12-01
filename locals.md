@@ -1,4 +1,4 @@
-# Lab: Local Variables
+# Lab: Local Variables/Values
 
 Duration: 15 minutes
 
