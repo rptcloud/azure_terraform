@@ -80,11 +80,11 @@ Once the file is ready we will need to dothe following steps...
 Validate your configuration.
 
 ```shell
-> packer validate web-visitors.json
+packer validate web-visitors.json
 ```
 
 ```shell
-> packer build web-visitors.json
+packer build web-visitors.json
 ```
 ##### Resources
 * Packer [Docs](https://www.packer.io/docs/index.html)
