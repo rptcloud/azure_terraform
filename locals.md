@@ -223,16 +223,15 @@ resource "azurerm_virtual_machine" "training" {
   os_profile_linux_config {
     disable_password_authentication = false
   }
-}
-
-   tags = {
+  
+  tags = {
     "Name"        = var.computer_name
     "Environment" = var.EnvironmentTag 
     "createdby"   = local.createdby
     "Service"     = local.service_name
     "Owner"       = local.owner
   }
-
+}
 ```
 
 After making these changes run a `terraform apply` to update your tags.
