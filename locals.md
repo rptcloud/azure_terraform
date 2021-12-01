@@ -37,12 +37,12 @@ variable "num_vms" {
 }
 ```
 
-Add a `terraform.tfvars` file:
+Add a `terraform.tfvars` file and replace the ### items with your initials:
   
 ```hcl
-resource_group_name = "ghm-resourcegroup-locals"
+resource_group_name = "###-resourcegroup-locals"
 EnvironmentTag      = "staging"
-prefix              = "ghm"
+prefix              = "###"
 location            = "East US"
 computer_name       = "myserver"
 admin_username      = "testadmin"
@@ -135,14 +135,121 @@ resource "azurerm_virtual_machine" "training" {
   os_profile_linux_config {
     disable_password_authentication = false
   }
-
-  tags = local.common_tags
 }
 ```
-  
-  
 
-After making these changes, rerun `terraform plan`. You should see that there will be some tagging updates to your server instances. Execute a `terraform apply` to make these changes.
+After making these changes run a `terraform init` and then `terraform apply`.
+
+Update the `azurerm_virtual_machine` block inside your `main.tf` to add new tags to all instances using local variable interpolation.
+
+```hcl
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "training" {
+  name     = var.resource_group_name
+  location = var.location
+}
+
+resource "azurerm_virtual_network" "training" {
+  name                = "azureuser${var.prefix}vn"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+}
+
+resource "azurerm_subnet" "training" {
+  name                 = "azureuser${var.prefix}sub"
+  resource_group_name  = azurerm_resource_group.training.name
+  virtual_network_name = azurerm_virtual_network.training.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+
+
+resource "azurerm_public_ip" "training" {
+  count                   = var.num_vms
+  name                    = "azureuser${var.prefix}ip-${count.index + 1}"
+  location                = azurerm_resource_group.training.location
+  resource_group_name     = azurerm_resource_group.training.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+  domain_name_label       = "azureuser${var.prefix}domain${count.index + 1}"
+}
+
+resource "azurerm_network_interface" "training" {
+  count               = var.num_vms
+  name                = "azureuser${var.prefix}ni-${count.index + 1}"
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+
+  ip_configuration {
+    name                          = "azureuser${var.prefix}ip"
+    subnet_id                     = azurerm_subnet.training.id
+    private_ip_address_allocation = "dynamic"
+    public_ip_address_id          = azurerm_public_ip.training[count.index].id
+  }
+}
+
+resource "azurerm_virtual_machine" "training" {
+  count                 = var.num_vms
+  name                  = "${var.prefix}vm-${count.index + 1}"
+  location              = azurerm_resource_group.training.location
+  resource_group_name   = azurerm_resource_group.training.name
+  network_interface_ids = [azurerm_network_interface.training[count.index].id]
+  vm_size               = "Standard_F2"
+
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "${var.prefix}disk-${count.index + 1}"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = var.computer_name
+    admin_username = var.admin_username
+    admin_password = var.admin_password
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+}
+
+   tags = {
+    "Name"        = var.computer_name
+    "Environment" = var.EnvironmentTag 
+    "createdby"   = local.createdby
+    "Service"     = local.service_name
+    "Owner"       = local.owner
+  }
+
+```
+
+After making these changes run a `terraform apply` to update your tags.
+
+```shell
+  # azurerm_virtual_machine.training[0] will be updated in-place
+  ~ resource "azurerm_virtual_machine" "training" {
+        id                               = "/subscriptions/e1f6a3f2-9d19-4e32-bcc3-1ef1517e0fa5/resourceGroups/ghm-resourcegroup-locals/providers/Microsoft.Compute/virtualMachines/ghmvm-1"
+        name                             = "ghmvm-1"
+      ~ tags                             = {
+          + "Environment" = "staging"
+          + "Name"        = "myserver"
+          + "Owner"       = "Cloud Team"
+          + "Service"     = "Automation"
+          + "createdby"   = "terraform"
+        }
+```
 
 ## Task 3: Using locals with variable expressions
 
