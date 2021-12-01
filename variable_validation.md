@@ -233,7 +233,6 @@ output "cost_code" {
 
 output "phone_number" {
   value     = local.contact_info.phone_number
-  sensitive = true
 }
 
 output "my_number" {
