@@ -307,6 +307,16 @@ output "jumpbox_public_ip" {
 }
 ```
 
+### Create web.conf file
+
+Create a file `web.conf` and add the following configuration:
+
+```
+#cloud-config
+packages:
+ - nginx
+```
+
 ### Run Terraform Workflow
 
 Run `terraform init` since this is the first time we are running Terraform from this directory.
