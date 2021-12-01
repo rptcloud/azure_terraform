@@ -254,7 +254,7 @@ After making these changes run a `terraform apply` to update your tags.
 
 Expressions in local values are not limited to literal constants; they can also reference other values in the module in order to transform or combine them, including variables, resource attributes, or other local values.
 
-Add another local variable block to your `locals.tf` configuration which references the local variables set in the previous portion of the lab.
+Add another local variable block to your `local.tf` configuration which references the local variables set in the previous portion of the lab.
 
 ```hcl
 locals {
@@ -319,6 +319,12 @@ No changes. Infrastructure is up-to-date.
 This means that Terraform did not detect any differences between your
 configuration and real physical resources that exist. As a result, no
 actions need to be performed.
+```
+
+After you are complete with the lab, you can clean up via a `terraform destroy`.
+
+```bash
+terraform destroy
 ```
 
 Local values can be helpful to avoid repeating the same values or expressions multiple times in a configuration, but if overused they can also make a configuration hard to read by future maintainers by hiding the actual values used.
