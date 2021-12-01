@@ -261,11 +261,11 @@ Add another local variable block to your `locals.tf` configuration which referen
 locals {
   # Common tags to be assigned to all resources
   common_tags = {
-    Name        = var.identity
-    Environment = var.environment
-    createdby = local.createdby
-    Service = local.service_name
-    Owner   = local.owner
+    Name        = var.computer_name
+    Environment = var.EnvironmentTag
+    createdby   = local.createdby
+    Service     = local.service_name
+    Owner       = local.owner
   }
 }
 ```
