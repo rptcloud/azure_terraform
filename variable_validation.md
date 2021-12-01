@@ -247,7 +247,7 @@ department = "ABC"
 cost_code  = "1-3-4"
 ```
 
-Execute a `terraform apply` with the variables in the `terraform.auto.tfvars`.
+Execute a `terraform apply` with the variables in the `terraform.tfvars`.
 
 ```bash
 terraform apply
