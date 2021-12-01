@@ -240,7 +240,7 @@ output "my_number" {
 }
 ```
 
-`terraform.auto.tfvars`
+Append the following items to the `terraform.tfvars` file:
 
 ```hcl
 department = "ABC"
@@ -296,9 +296,6 @@ phone_number = <sensitive>
 
 Even though items are marked as sensitive within the Terraform configuration, they are stored within the Terraform state file. It is therefore critical to limit the access to the Terraform state file.
 
-View the most current terraform state file on the `States` tab within Terraform Cloud
-
-![Sensitive State](./img/sensitive_state.png)
 ```json
 {
  {
