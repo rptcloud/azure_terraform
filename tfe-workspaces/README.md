@@ -46,7 +46,7 @@ variable "environment" {}
 variable "location" {}
 
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-tfc-rg"
+  name     = "${var.prefix}-tfc-rg-${var.environment}"
   location = var.location
 
   tags = {
