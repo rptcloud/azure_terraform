@@ -1,4 +1,4 @@
-# Terraform Enterprise - Private Module Registry
+# Terraform Cloud/Enterprise - Private Module Registry
 
 ## Expected Outcome
 
