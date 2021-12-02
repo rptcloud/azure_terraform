@@ -204,9 +204,7 @@ If you are satisfied with the changes, apply the changes.
 
 Navigate to the workspace "Settings" -> "Destruction and Deletion".
 
-Click Queue Destroy Plan.
-
-![](img/tfe-destroy-plan.png)
+Click Queue Destroy Plan
 
 Once the plan completes, apply it to destroy your infrastructure.
 
