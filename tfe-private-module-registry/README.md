@@ -202,8 +202,6 @@ If you are satisfied with the changes, apply the changes.
 
 ## Clean Up
 
-Add an Environment variable to your workspace "CONFIRM_DESTROY=1".
-
 Navigate to the workspace "Settings" -> "Destruction and Deletion".
 
 Click Queue Destroy Plan.
