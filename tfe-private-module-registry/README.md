@@ -62,11 +62,11 @@ provider "azurerm" {
 }
 
 variable "vnet_address_spacing" {
-  type = "list"
+  type = list
 }
 
 variable "subnet_address_prefixes" {
-  type = "list"
+  type = list
 }
 
 module "networking" {
