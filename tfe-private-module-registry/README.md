@@ -19,7 +19,7 @@ Each of these repositories represents a module that can be developed and version
 
 ### Create a new github repository
 
-In github, create a new public repository names "ptfe-workspace-modules".
+In github, create a new public repository names "tfc-workspace-modules".
 
 Create a single `main.tf` file with the following contents:
 
@@ -62,7 +62,7 @@ Create a TFE workspace that uses the VCS connection to load this new repository.
 
 ![](img/tfe-new-workspace.png)
 
-Select the repository and name the workspace the same thing "ptfe-workspace-modules"
+Select the repository and name the workspace the same thing "tfc-workspace-modules"
 
 ![](img/tfe-new-workspace-final.png)
 
@@ -96,7 +96,7 @@ Repeat this step for the other three modules:
 
 ### Configure Workspace Variables
 
-Navigate back to your "ptfe-workspace-modules" workspace.
+Navigate back to your "tfc-workspace-modules" workspace.
 
 Set the Terraform Variables:
 
@@ -150,7 +150,7 @@ Login to the at Azure Portal to see your infrastructure.
 
 ### Update a Module
 
-In the `ptfe-workspace-modules` repository, navigate to the `main.tf` file.
+In the `tfc-workspace-modules` repository, navigate to the `main.tf` file.
 
 Add the following to deploy the rest of your application (again, be sure to update the source references):
 
