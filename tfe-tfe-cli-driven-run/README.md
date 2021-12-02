@@ -43,30 +43,17 @@ terraform {
     organization = "<my-tfe-org-name>"
 
     workspaces {
-      name = "<my-tfe-workspace-name>"
+      name = "###-tfecli-test-run"
     }
   }
 }
 ```
 
-where `hostame` is the hostname of your TFE instance, `organization` is your specific TFE Organization name, and `name` within the workspaces block is your newly created Workspace name.
-
-
-5. If you still have your TFE API token stashed from one of the previous labs, get ready to copy it. If not, create a new TFE API token in the TFE UI.
-
-6. Create a hidden file named `.terraformrc` in your home directory on your local machine, and add the following stanza:
-
-```
-credentials "app.terraform.io" {
-  token = "<my-tfe-api-token>"
-}
-```
-
-> Note: On Windows, the file must be named named `terraform.rc` and placed in the relevant user's `%APPDATA%` directory. The physical location of this directory depends on your Windows version and system configuration; use `$env:APPDATA` in PowerShell to find its location on your system. 
+where `organization` is your specific TFC Organization name, and `name` within the workspaces block is your newly created Workspace name.
 
 1. `terraform init`
-2. `terraform plan` - refresh the TFE UI and look for the running plan within your TFE Workspace
-3. `terraform apply` - refresh the TFE UI and look for the running apply within your TFE Workspace
+2. `terraform plan` - refresh the TFE UI and look for the running plan within your TFC Workspace
+3. `terraform apply` - refresh the TFE UI and look for the running apply within your TFC Workspace
 
 
 ## Summary
