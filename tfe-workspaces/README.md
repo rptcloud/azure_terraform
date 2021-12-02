@@ -11,7 +11,7 @@ In this challenge, you will create a repository and workspaces.
 Login to github and create a new repository by navigating to <https://github.com/new>.
 
 Use the following settings:
-- `name` = "###-tfe-workspace"
+- `name` = "###-tfc-workspace"
 - Private repo
 - Check "Initialize this repository with a README"
 - Add `.gitignore` of type "Terraform"
@@ -20,7 +20,7 @@ Use the following settings:
 
 Once created, clone the repository to your local machine.
 
-### Create a TFE Workspace
+### Create a TFC Workspace
 
 Login to TFE and click the "+ New Workspace" button.
 
@@ -63,9 +63,9 @@ git commit -m "Initial"
 git push origin master
 ```
 
-### TFE Workspace Variables
+### TFC Workspace Variables
 
-Back in your TFE Workspace, navigate to your workspace.
+Back in your TFC Workspace, navigate to your workspace.
 
 Go to the "Variables" tab.
 
