@@ -22,7 +22,7 @@ Once created, clone the repository to your local machine.
 
 ### Create a TFC Workspace
 
-Login to TFE and click the "+ New Workspace" button.
+Login to TFC and click the "+ New Workspace" button.
 
 Select the VCS Connection to github.
 
@@ -46,7 +46,7 @@ variable "environment" {}
 variable "location" {}
 
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-tfe-rg"
+  name     = "${var.prefix}-tfc-rg"
   location = var.location
 
   tags = {
