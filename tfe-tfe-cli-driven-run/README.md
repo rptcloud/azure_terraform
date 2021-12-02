@@ -52,7 +52,7 @@ terraform {
 where `organization` is your specific TFC Organization name, and `name` within the workspaces block is your newly created Workspace name.
 
 1. `terraform init`
-2. `terraform plan` - refresh the TFC UI and look for the running plan within your TFC Workspace
+2. `terraform plan`
 3. `terraform apply` - refresh the TFC UI and look for the running apply within your TFC Workspace
 
 
