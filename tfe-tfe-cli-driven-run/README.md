@@ -61,6 +61,6 @@ where `organization` is your specific TFC Organization name, and `name` within t
 
 
 ## Summary
-Steps 4-6 are they key concepts with the _CLI-driven run_ method. We need a `backend.tf` file so the local Terraform client knows where to make its API calls against TFC, and we also need a TFC API token so we can properly authenticate to our TFC instance.  It is also important to note that we _did not_ connect our Workspace to a VCS repo.  This is because the Terraform client takes care of compressing and sending the code to the TFC workspace via the TFC API.
+The concepts with the _CLI-driven run_ method are that we need a `backend.tf` file so the local Terraform client knows where to make its API calls against TFC, and we also need a TFC API token so we can properly authenticate to our TFC instance.  It is also important to note that we _did not_ connect our Workspace to a VCS repo.  This is because the Terraform client takes care of compressing and sending the code to the TFC workspace via the TFC API.
 
 This method can be run locally as we just demonstrated, or it can be executed from a build script/ CI pipeline.
