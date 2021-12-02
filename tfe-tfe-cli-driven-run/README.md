@@ -22,6 +22,10 @@ ARM_TENANT_ID
 
 **main.tf**
 ```
+provider "azurerm" {
+  features {}
+}
+
 resource "azurerm_resource_group" "rg" {
   name     = "###-temp-rg"
   location = "eastus"
