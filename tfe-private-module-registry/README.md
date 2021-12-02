@@ -17,6 +17,34 @@ You are going to fork the following repositories into your own GitHub account:
 
 Each of these repositories represents a module that can be developed and versioned independently.
 
+### Add Modules
+
+We need to add these repositories into the Private Module Registry.
+
+Navigate back to Terraform Cloud and click the "Modules" menu at the top of the page. From there click the "+ Add Module" button.
+
+![](img/tfe-add-module.png)
+
+Select the networking repository you forked earlier.
+
+![](img/tfe-select-module-repo.png)
+
+> Note: You will see your github user name instead of 'azure-terraform-workshop/' since you forked this repo.
+
+Click "Publish Module".
+
+This will query the repository for necessary files and tags used for versioning.
+
+Congrats, you are done!
+
+Ok, not really...
+
+Repeat this step for the other three modules:
+
+- terraform-azurerm-appserver
+- terraform-azurerm-dataserver
+- terraform-azurerm-webserver
+
 ### Create a new github repository
 
 In github, create a new public repository names "tfc-workspace-modules".
@@ -52,47 +80,19 @@ module "networking" {
 }
 ```
 
-Update the source arguments to your organization by replacing "YOUR_ORG_NAME" with your TFE organization name.
+Update the source arguments to your organization by replacing "YOUR_ORG_NAME" with your TFC organization name.
 
 Commit the file and check the code into github.
 
 ### Create a workspace
 
-Create a TFE workspace that uses the VCS connection to load this new repository.
+Create a TFC workspace that uses the VCS connection to load this new repository.
 
 ![](img/tfe-new-workspace.png)
 
 Select the repository and name the workspace the same thing "tfc-workspace-modules"
 
 ![](img/tfe-new-workspace-final.png)
-
-### Add Modules
-
-Before we can use our Networking module, we need to add it to the Private Module Registry.
-
-Navigate back to Terraform Enterprise and click the "Modules" menu at the top of the page. From there click the "+ Add Module" button.
-
-![](img/tfe-add-module.png)
-
-Select the networking repository you forked earlier.
-
-![](img/tfe-select-module-repo.png)
-
-> Note: You will see your github user name instead of 'azure-terraform-workshop/' since you forked this repo.
-
-Click "Publish Module".
-
-This will query the repository for necessary files and tags used for versioning.
-
-Congrats, you are done!
-
-Ok, not really...
-
-Repeat this step for the other three modules:
-
-- terraform-azurerm-appserver
-- terraform-azurerm-dataserver
-- terraform-azurerm-webserver
 
 ### Configure Workspace Variables
 
