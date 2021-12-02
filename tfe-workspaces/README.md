@@ -1,4 +1,4 @@
-# Terraform Enterprise - Workspaces
+# Terraform Cloud - Workspaces
 
 ## Expected Outcome
 
