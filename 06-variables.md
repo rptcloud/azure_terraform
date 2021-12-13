@@ -58,7 +58,7 @@ variable admin_password {}
 Create a `terraform.tfvars` file to specify the values for the declared variables above.
 
 ```hcl
-resource_group_name = "initials-resourcegroup"
+resource_group_name = "<your_initials>-resourcegroup"
 EnvironmentTag = "staging"
 prefix = "<your_initials>"
 location = "East US"
