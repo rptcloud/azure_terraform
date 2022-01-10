@@ -106,7 +106,7 @@ guid = ad4efda0-d17d-559c-5cfe-1ed3ab9ce86b
 password = USCx=<D(7+KVWu:o
 ```
 
-This is great, but I wan the keys as files, how?
+This is great, but I want the keys as files, how?
 
 Add the following config:
 
