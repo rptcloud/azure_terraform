@@ -21,7 +21,7 @@ Create a `main.tf` and `terraform.tfvars` files to hold our configuration.
 
 When you rename a Azure Virtual Macine, terraform will reprovision the resource (delete and then create a new instance).  We can leverage `create_before_destroy` to override that default behavior
 
-### Step 6.1.1: Deploy your Azure Virutal Machine
+### Step 6.1.1: Deploy your Azure Virtual Machine
 
 Place the following configuration in your `main.tf` file to deploy your virtual machine.
 
@@ -127,7 +127,7 @@ prefix              = "###"
 location            = "East US"
 admin_username      = "testadmin"
 admin_password      = "Password1234!"
-vm_size             = "Standard_F2"
+vm_size             = "Standard_A2_v2"
 ```
 
 - Run a `terraform init`
