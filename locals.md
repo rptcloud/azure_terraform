@@ -278,7 +278,7 @@ resource "azurerm_virtual_machine" "training" {
   location              = azurerm_resource_group.training.location
   resource_group_name   = azurerm_resource_group.training.name
   network_interface_ids = [azurerm_network_interface.training[count.index].id]
-  vm_size               = "Standard_F2"
+  vm_size               = "Standard_A2_v2"
 
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
