@@ -156,7 +156,7 @@ Now that we have our state stored in Terraform Cloud in our `###_write_state` wo
 Start by creating a new directory and `main.tf` file:
 
 ```shell
-mkdir -p /workstation/terraform/azure/cloud_state_demo/read_state && cd $_
+mkdir -p ~/workstation/terraform/azure/cloud_state_demo/read_state && cd $_
 touch main.tf
 ```
 
