@@ -170,17 +170,53 @@ Answer `yes` to proceed with the replacement of the instances.
 
 ### Step 6.1.3: Use `create_before_destroy` and rename the instances again
 
-Add a `lifecycle` configuration to the `azurerm_virtual_machine` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, added in the previous step.
+Add a `lifecycle` configuration to the `azurerm_virtual_machine` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, and replacing it with `new`
 
 ```hcl
 resource "azurerm_virtual_machine" "main" {
-  name         = "${var.prefix}-my-vm"
+  name         = "${var.prefix}-my-vm-new"
   # ...
   
   storage_os_disk {
     name              = "${var.prefix}myvm-osdisk"
     ...
     
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+```
+
+Also update the `azurerm_network_interface` with a lifecyle block and new name:
+
+```hcl
+resource "azurerm_network_interface" "main" {
+  name                = "${var.prefix}-my-nic-new"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  ip_configuration {
+    name                          = "config1"
+    subnet_id                     = azurerm_subnet.main.id
+    private_ip_address_allocation = "dynamic"
+    public_ip_address_id          = azurerm_public_ip.main.id
+  }
+  
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+```
+
+As well as the `azurerm_public_ip` with a lifecyle block and new name:
+
+```hcl
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-my-pubip-new"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  allocation_method   = "Static"
+  
   lifecycle {
     create_before_destroy = true
   }
