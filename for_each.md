@@ -377,7 +377,7 @@ public_dns = {
 
 ## Task 7: Update the server variables to determine which instance will be destroyed.
 
-Update the `servers` local variable to remove the `server-iis` instance by removing the following block:
+Update the `servers` local variable to remove the `server-ubuntu-16` instance by removing the following block:
 
 ```hcl
     server-ubuntu-16 = {
