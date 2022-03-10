@@ -1,6 +1,6 @@
 # Lab: Variable Validation and Suppression
 
-We may want to validate and possibly suppress and sensitive information defined within our variables.
+We may want to validate and possibly suppress any sensitive information defined within our variables.
 
 - Task 1: Validate variables in Terraform Configuration
 - Task 2: Suppress sensitive information
