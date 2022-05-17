@@ -22,7 +22,7 @@ In this step, you'll create a Terraform project on disk that does nothing but em
 The project should consist of a single file which can be named something like `primary/main.tf`.
 
 ```shell
-mkdir -p /workstation/terraform/azure/read_state_lab/primary && cd $_
+mkdir -p ~/workstation/terraform/azure/read_state_lab/primary && cd $_
 ```
 
 ```shell
@@ -61,7 +61,7 @@ Create a new Terraform configuration that uses a data source to read the configu
 Create a second directory named `secondary`.
 
 ```shell
-mkdir /workstation/terraform/azure/read_state_lab/secondary && cd $_
+mkdir ~/workstation/terraform/azure/read_state_lab/secondary && cd $_
 ```
 
 ```shell

@@ -84,7 +84,7 @@ For this task, you'll create a Terraform project which stores its state in Terra
 In this step, you'll create the project and a configuration.
 
 ```shell
-mkdir -p /workstation/terraform/azure/cloud_state_demo/write_state && cd $_
+mkdir -p ~/workstation/terraform/azure/cloud_state_demo/write_state && cd $_
 touch main.tf
 ```
 

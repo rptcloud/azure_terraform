@@ -9,17 +9,19 @@ This lab demonstrates how to use lifecycle directives to control the order in wh
 
 ### Create the base Terraform Configuration
 
-Change directory into a folder specific to this challenge.
+Change directory into a folder specific to this challenge, and create a `main.tf` and `terraform.tfvars` files to hold our configuration.
 
-For example: `cd /workstation/terraform/azure/lifecycles/`.
+```shell
+mkdir -p ~/workstation/terraform/azure/lifecycles/ && cd $_
+touch main.tf
+touch terraform.tfvars
+```
 
 We will start with a few of the basic resources needed.
 
-Create a `main.tf` and `terraform.tfvars` files to hold our configuration.
-
 ## Task 1: Use `create_before_destroy` with an instance rename
 
-When you rename a Azure Virtual Macine, terraform will reprovision the resource (delete and then create a new instance).  We can leverage `create_before_destroy` to override that default behavior
+When you rename a Azure Virtual Machine, terraform will reprovision the resource (delete and then create a new instance).  We can leverage `create_before_destroy` to override that default behavior
 
 ### Step 6.1.1: Deploy your Azure Virtual Machine
 
@@ -120,7 +122,7 @@ output "public-ip" {
 }
 ```
 
-Update your `terraform.tfvars` file with the following information, replacing ```###``` with your intials
+Update your `terraform.tfvars` file with the following information, replacing ```###``` with your initials
 
 ```hcl
 prefix              = "###"
@@ -208,7 +210,7 @@ resource "azurerm_network_interface" "main" {
 }
 ```
 
-As well as the `azurerm_public_ip` with a lifecyle block and new name:
+As well as the `azurerm_public_ip` with a lifecycle block and new name:
 
 ```hcl
 resource "azurerm_public_ip" "main" {
