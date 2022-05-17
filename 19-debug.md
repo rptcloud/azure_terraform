@@ -10,23 +10,30 @@ Duration: 15 minutes
 
 Terraform has detailed logs which can be enabled by setting the TF_LOG environment variable to any value. This will cause detailed logs to appear on stderr.
 
+Navigate into any directory that has a current Terraform configuration from previous labs. We'll select the basic configuration from the beginning of the course:
+
+```bash
+cd ~/workstation/terraform/
+```
+
 You can set TF_LOG to one of the log levels TRACE, DEBUG, INFO, WARN or ERROR to change the verbosity of the logs, with TRACE being the most verbose.
 
 Linux
 
 ```bash
-> export TF_LOG=TRACE
+export TF_LOG=TRACE
 ```
 
 PowerShell
 
 ```shell
-> $env:TF_LOG="TRACE"
+$env:TF_LOG="TRACE"
 ```
+
 Run Terraform Apply.
 
 ```shell
-> terraform apply
+terraform apply
 ```
 
 
@@ -56,19 +63,18 @@ Example Output
 To persist logged output you can set TF_LOG_PATH in order to force the log to always be appended to a specific file when logging is enabled. Note that even when TF_LOG_PATH is set, TF_LOG must be set in order for any logging to be enabled.
 
 ```bash
-> export TF_LOG_PATH="terraform_log.txt"
+export TF_LOG_PATH="terraform_log.txt"
 ```
 
 PowerShell
 
 ```shell
-> $env:TF_LOG_PATH="terraform_log.txt"
+$env:TF_LOG_PATH="terraform_log.txt"
 ```
 Run Terraform Apply.
 
 ```shell
-> terraform apply
+terraform apply
 ```
 
 Open the `terraform_log.txt` to see the contents of the debug trace for your terraform apply.  Experiment with removing the provider stanza within your Terraform configuration and run a `terraform plan` to debug how Terraform searches for where a provider is located.
-
