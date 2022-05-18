@@ -207,6 +207,10 @@ data "terraform_remote_state" "write_state" {
 }
 ```
 
+In addition to creating the `terraform_remote_state` data source in your configuration, you will also need to change the workspace settings for you `###_write_state` workspace to allow other workspaces to access its state data.
+
+From the Terraform Cloud UI, go to the `###_write_state` workspace, and select *Settings->General*. Under the *Remote state sharing* section change the radio button to **Share with all workspaces in this organization**, then click on *Save settings* at the bottom of the page.
+
 ### Step 2.3.4
 
 Now that we have access to our remote `###_write_state` workspace, we can retrieve the `random` output contained within it.
