@@ -12,7 +12,7 @@ In this challenge, you will use non cloud specific providers to assist in contai
 
 Change directory into a folder specific to this challenge.
 
-For example: `/workstaton/terraform/azure/extending-terraform/`.
+For example: `/workstation/terraform/azure/extending-terraform/`.
 
 Create a  `main.tf` file, we will add to this file as we go.
 
