@@ -29,6 +29,10 @@ terraform {
     }
   }
 }
+
+provider "azurerm" {
+  features {}
+}
 ```
 
 Add the following to the `main.tf` file:

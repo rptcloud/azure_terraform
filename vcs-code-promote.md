@@ -6,112 +6,71 @@ GitOps is an operational framework that takes DevOps best practices that we use 
 - Merge Requests
 - Pipelines
 
-In this challenge, we will utilize the benefits the VCS connected workflow to promote code from a `development` branch into our `main` branch of the `app-build` code repository.
+In this challenge, we will utilize the benefits the VCS connected workflow to promote code from a `development` branch into our `main` branch of the `tfc-azure-example` code repository.
 
 Duration: 30 minutes
 
-- Task 1: Create a `development` branch in your `app-build` code repository.
-- Task 2: Update your `web-server-dev` workspace to point to your `development` branch.
-- Task 3: Perform and update on your development branch to validate
-- Task 4: Create `web-server-prod` workspace to point to your `main` branch.
-- Task 5: Update `development` branch
-- Task 6: Merge Change into `main` branch
+- Task 1: Clone the `tfc-azure-example` code repository
+- Task 2: Create a `web-net-dev` workspace to point to your `development` branch.
+- Task 3: Create a `web-net-prod` workspace
+- Task 4: Perform and update on your development branch to validate
+- Task 5: Merge Change into `main` branch
 
-## Task 1: Create a development branch in your `app-build` code repository.
+## Task 1: Clone the `tfc-azure-example` code repository
 
-In the `app-build` github repository, create a `development` branch from the
+Fork the following registry into your GitHub account: [tfc-azure-example](https://github.com/ned1313/tfc-azure-example)
 
-![Dev Branch](img/dev_branch.png)
+In the `tfc-azure-example` github repository, create a `development` branch if one does not already exist.
 
-## Task 2: Update your `web-server-dev` workspace to point to your `development` branch.
+## Task 2: Create a `web-net-dev` workspace to point to your `development` branch
 
-We will now update the Version Control setting of our `web-server-dev` workspace to point to our new `development` branch.
+Create a new TFC workspace named `web-net-dev` that is tied to the `tfc-azure-example` github repo by choosing a VCS Control workflow. In the advanced settings under *VCS Branch*, configure it to watch the development branch.
 
-![Dev Branch Settings](img/update_vcs_dev.png)
+In the workspace, add a Terraform variable called `prefix` and set it to `dev`.
 
-Update `VCS Branch` to `development`
+Click on `Settings` at the top of the UI and then select *Variable sets* from the left side menu.
 
-![Dev Branch](img/update_vcs_dev_branch.png)
+Create a new variable set called `azure-creds` and make it available to all workspaces. Add four **environment** variables to the variable set:
 
-- Task 3: Perform and update on your development branch to validate
+- ARM_TENANT_ID
+- ARM_SUBSCRIPTION_ID
+- ARM_CLIENT_ID
+- ARM_CLIENT_SECRET
 
-This will trigger a Terraform run that is tied to the last commit on your `development` branch
+Use the values from your workstation. You can find them by running `env | grep ARM`.
 
-![Dev Branch Plan](img/update_vcs_dev_plan.png)
+Click on **Create variable set** to complete the process.
 
-## Task 4: Create `web-server-prod` workspace to point to your `main` branch.
+Back in the `web-net-dev` workspace, kick off a run and approve it.
 
-Create a new TFC workspace named `web-server-prod` that is tied to the `app-build` github repo by choosing a VCS Control workflow.
+## Task 3: Create a `web-net-prod` workspace
 
-![Prod Workspace](img/prod_workspace.png)
+Create a new TFC workspace named `web-net-prod` that is tied to the `tfc-azure-example` github repo by choosing a VCS Control workflow. Under Advanced settings, check the box for *Automatic speculative plans*. Leave the rest of the defaults as this will be tracking the default branch of the repo.
 
-![Prod Workspace](img/prod_workspace_name.png)
+In the workspace, add a Terraform variable called `prefix` and set it to `prod`.
 
-Update the variables of the new workspace with the values that were specified in the `web-server-dev` workspace, but add a `-prod` suffix on the `identity` and `bucket` variables.
+Run a plan and approve it to create the base infrastructure for the production environment.
 
-![Prod VCS Variables](img/prod_workspace_variables_complete.png)
+## Task 4: Perform and update on your development branch to validate
 
-Update the `ssh-keys` workspace to allow for the `web-server-prod` workspace to utilize the shared keys.
-
-![Prod VCS Variables](img/ssh_keys_prod.png)
-
-Once updated perform an planned run within the `web-server-prod` workspace to validate the buildout of the production environment.
-
-![Prod VCS Variables](img/prod_plan.png)
-
-## Task 5: Update `development` branch
-
-Update the `main.tf` in the development branch to include an server for `ngnix`.
-
-`main.tf`
+On the development branch, add the following to the `main.tf` file:
 
 ```hcl
 locals {
-  servers = {
-    server-iis = {
-      server_os              = "windows_2019"
-      identity               = "$var.identity-windows"
-      subnet_id              = var.subnet_id
-      vpc_security_group_ids = var.vpc_security_group_ids
-    },
-    server-apache = {
-      server_os              = "ubuntu_20_04"
-      identity               = "$var.identity-ubuntu"
-      subnet_id              = var.subnet_id
-      vpc_security_group_ids = var.vpc_security_group_ids
-    },
-    server-nginx = {
-      server_os              = "ubuntu_20_04"
-      identity               = "$var.identity-ubuntu"
-      subnet_id              = var.subnet_id
-      vpc_security_group_ids = var.vpc_security_group_ids
-    }
-  }
+  change = "trigger a change"
 }
 ```
 
-Commit the change to the `development` branch, and view the impact on your `web-server-dev` TFC workspace.
+This will trigger a Terraform run that is tied to the last commit on your `development` branch. Since there was no change to the infrastructure, there will be no option to approve the plan.
 
-![TFC Dev Workspace Plan](img/update_dev_branch.png)
+## Task 5: Merge Change into `main` branch
 
-Confirm and Apply the update on the `web-server-dev` workspace.
+Once the `web-server-dev` TFC workspace completes its run, perform a pull request to merge the change into the `main` branch.
 
-## Task 6: Merge Change into `main` branch
+The GitOps workflow allows code to be merged into another branch via a merge request. Terraform Cloud's VCS control workflow integrates into this process showing if the deployment into the `web-server-dev` workspace was successful.
 
-Once the `web-server-dev` TFC workspace completes its run, perform a pull request to
-
-![Dev Pull Request](img/pull_request.png)
-
-The GitOps workflow allows code to be merged into another branch via a merge request. Terraform Cloud's VCS control workflow integrates into this process showing if the deployment into the `web-server-dev` workspace was succesful.
-
-![Dev Pull Request](img/merge_request.png)
-
-This allows the merge request approver to have visibility that the code change was succesful in the `development` environment, and view the details of the change within Terraform Cloud.
+This allows the merge request approver to have visibility that the code change was successful in the `development` environment, and view the details of the change within Terraform Cloud.
 
 When the Merge is approved this will automatically trigger the deployment of the code into the `web-server-prod` workspace.
 
-![Dev Pull Request](img/confirm_merge.png)
-
-We have sucessfully now made changes into the development environment and promoted those changes into production via a GitOps workflow.
-
-![Code Promotion](img/code_promotion.png)
+We have successfully now made changes into the development environment and promoted those changes into production via a GitOps workflow.

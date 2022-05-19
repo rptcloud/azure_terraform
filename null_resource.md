@@ -11,11 +11,20 @@ We'll demonstrate how `null_resource` can be used to take action on a set of exi
 
 
 ## Task 1: Create a Azure Virtual Machine using Terraform
-### Step 11.1.1: Create Server instances
 
-Build the web servers using the Azure Virtual Machine Module
+### Step 1.1: Create Server instances
 
-Update or create your `main.tf` with the following:
+Build the web servers using the Azure Virtual Machine:
+
+Create the folder structure:
+
+```bash
+mkdir ~/workstation/terraform/null_resource && cd $_
+touch {variables,main}.tf
+touch terraform.tfvars
+```
+
+Update your `main.tf` with the following:
 
 ```hcl
 provider "azurerm" {
@@ -61,7 +70,7 @@ resource "azurerm_network_interface" "training" {
   ip_configuration {
     name                          = "azureuser${var.prefix}ip"
     subnet_id                     = azurerm_subnet.training.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.training[count.index].id
   }
 }
@@ -72,7 +81,7 @@ resource "azurerm_virtual_machine" "training" {
   location              = azurerm_resource_group.training.location
   resource_group_name   = azurerm_resource_group.training.name
   network_interface_ids = [azurerm_network_interface.training[count.index].id]
-  vm_size               = "Standard_F2"
+  vm_size               = "Standard_D2s_v4"
 
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
@@ -105,7 +114,8 @@ resource "azurerm_virtual_machine" "training" {
 }
 
 ```
-Update or create your `variables.tf` with the following:
+
+Update your `variables.tf` with the following:
 
 ```hcl
 variable "resource_group_name" {}
@@ -121,7 +131,8 @@ variable "num_vms" {
   default = 2
 }
 ```
-Update or create your `terraform.tfvars` with the following:
+
+Update or your `terraform.tfvars` with the following and replace the `###` with your initials:
 
 ```hcl
 resource_group_name = "###-resourcegroup"
@@ -137,9 +148,10 @@ num_vms = 1
 Then perform an `init`, `plan`, and `apply`.
 
 ## Task 2: Use `null_resource` with a Azure Virtual Machine to take action with `triggers`
-### Step 11.2.1: Use `null_resource`
 
-Add `null_resource` stanza to the `main.tf`.  Notice that the trigger for this resource is set to 
+### Step 2.1: Use `null_resource`
+
+Add `null_resource` stanza to the `main.tf`.  Notice that the trigger for this resource is set to monitor changes to the number of virtual machines.
 
 ```hcl
 resource "null_resource" "web_cluster" {
@@ -155,15 +167,17 @@ resource "null_resource" "web_cluster" {
   }
 
   provisioner "local-exec" {
-    # Bootstrap script called with private_ip of each node in the clutser
+    # Bootstrap script called with private_ip of each node in the cluster
     command = "echo ${join(" Cluster local IP is : ", azurerm_public_ip.training.*.ip_address)}"
   }
 }
 ```
+
 Initialize the configuration with a `terraform init` followed by a `plan` and `apply`.
 
-### Step 11.2.2: Re-run `plan` and `apply` to trigger `null_resource`
-After the infrastructure has completed its buildout, change your machine count (in your terraform.tfvars) and re-run a plan and apply and notice that the null resource is triggered.  This is because the "cluster size" changed, triggering our null_resource.
+### Step 2.2: Re-run `plan` and `apply` to trigger `null_resource`
+
+After the infrastructure has completed its buildout, change your machine count (in your terraform.tfvars) and re-run a plan and apply and notice that the null resource is triggered.  This is because the `web_cluster_size` changed, triggering our null_resource.
 
 ```shell
 terraform apply
@@ -171,7 +185,8 @@ terraform apply
 
 Run `apply` a few times to see the `null_resource`.
 
-### Step 11.2.3: Destroy
+### Step 2.3: Destroy
+
 Finally, run `destroy`.
 
 ```shell
