@@ -37,11 +37,11 @@ variable "num_vms" {
 variable "vm_size" {
   type        = string
   description = "Server Size"
-  default     = "Standard_F2"
+  default     = "Standard_A2"
 
   validation {
-    condition     = contains(["Standard_F2", "Standard_A2", "Standard_DS1_v2"], var.vm_size)
-    error_message = "You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_F2."
+    condition     = contains(["Standard_D2s_v4", "Standard_A2", "Standard_DS1_v2"], var.vm_size)
+    error_message = "You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4."
   }
 }
 ```
@@ -75,7 +75,7 @@ resource "azurerm_subnet" "training" {
 
 resource "azurerm_public_ip" "training" {
   count                   = var.num_vms
-  name                    = "azureuser${var.prefix}ip-${count.index + 1}"
+  name                    = "azureuser${var.prefix}varval-${count.index + 1}"
   location                = azurerm_resource_group.training.location
   resource_group_name     = azurerm_resource_group.training.name
   allocation_method       = "Dynamic"
@@ -85,14 +85,14 @@ resource "azurerm_public_ip" "training" {
 
 resource "azurerm_network_interface" "training" {
   count               = var.num_vms
-  name                = "azureuser${var.prefix}ni-${count.index + 1}"
+  name                = "azureuser${var.prefix}varval-${count.index + 1}"
   location            = azurerm_resource_group.training.location
   resource_group_name = azurerm_resource_group.training.name
 
   ip_configuration {
     name                          = "azureuser${var.prefix}ip"
     subnet_id                     = azurerm_subnet.training.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.training[count.index].id
   }
 }
@@ -148,7 +148,7 @@ location            = "East US"
 computer_name       = "myserver"
 admin_username      = "testadmin"
 admin_password      = "Password1234!"
-vm_size             = "Standard_A2"
+vm_size             = "Standard_D2s_v4"
 num_vms             = 1
 ```
 
@@ -171,7 +171,7 @@ Initializing Terraform configuration...
 │   on variables.tf line 14:
 │   14: variable "vm_size" {
 │ 
-│ You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_F2.
+│ You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4.
 │ 
 │ This was checked by the validation rule at variables.tf:19,3-13.
 
