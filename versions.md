@@ -96,13 +96,11 @@ terraform providers
 ```bash
 Providers required by configuration:
 .
-├── provider[registry.terraform.io/hashicorp/aws]
-└── module.server
-    └── provider[registry.terraform.io/hashicorp/aws] ~> 3.0
+└── provider[registry.terraform.io/hashicorp/azurerm] ~> 3.6.0
 
 Providers required by state:
 
-    provider[registry.terraform.io/hashicorp/aws]
+    provider[registry.terraform.io/hashicorp/azurerm]
 ```
 
 ## Task 6: Add some basic configuration objects and deploy it

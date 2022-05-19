@@ -40,7 +40,7 @@ __Scope of Policies:__ Select -> "Policies enforced on selected workspaces"
 
 __Policies:__ Select the Policy created above -> Click "Add"
 
-__Workspaces:__ Select the workspace you created in the `tfe-workspaces` lab ("ptfe-workspace") -> Click "Add"
+__Workspaces:__ Select the workspace you created in the `vcs-code-promote` lab ("web-net-prod") -> Click "Add"
 
 ### Create Policy
 
