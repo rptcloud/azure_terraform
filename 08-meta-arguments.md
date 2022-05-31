@@ -21,7 +21,6 @@ resource "azurerm_virtual_machine" "training" {
   name                = "${var.prefix}vm-${count.index + 1}"
   location            = azurerm_resource_group.training.location
   resource_group_name = azurerm_resource_group.training.name
-  # network_interface_ids = [azurerm_network_interface.training.id]
   network_interface_ids = [azurerm_network_interface.training[count.index].id]
   vm_size               = "Standard_D2s_v4"
 
