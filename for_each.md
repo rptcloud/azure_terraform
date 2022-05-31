@@ -157,8 +157,10 @@ variable "num_vms" {
 
 `terraform.tfvars`
 
+Replace the `###` with your initials.
+
 ```hcl
-prefix         = "ghm"
+prefix         = "###"
 location       = "East US"
 admin_username = "testadmin"
 admin_password = "Password1234!"
@@ -188,8 +190,10 @@ Notice the way resources are indexed when using meta-arguments.
 
 Update the count from `2` to `1` by changing the `num_vms` variable in your `terraform.tfvars` file.
 
+Replace the `###` with your initials.
+
 ```hcl
-prefix         = "ghm"
+prefix         = "###"
 location       = "East US"
 admin_username = "testadmin"
 admin_password = "Password1234!"
