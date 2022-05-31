@@ -17,16 +17,45 @@ Add a count argument to the Azure Virtual Machine resource in `main.tf` with a v
 ```hcl
 # ...
 resource "azurerm_virtual_machine" "training" {
-  count                 = 2
-  name                  = "${var.prefix}vm-${count.index + 1}"
-  location              = azurerm_resource_group.training.location
-  resource_group_name   = azurerm_resource_group.training.name
+  count               = 2
+  name                = "${var.prefix}vm-${count.index + 1}"
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+  # network_interface_ids = [azurerm_network_interface.training.id]
   network_interface_ids = [azurerm_network_interface.training[count.index].id]
-  vm_size               = "Standard_F2"
-# ... leave the rest of the resource block unchanged...
+  vm_size               = "Standard_D2s_v4"
+
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "${var.prefix}disk-${count.index + 1}"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = "${var.computer_name}-${count.index + 1}"
+    admin_username = var.admin_username
+    admin_password = var.admin_password
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+
+  tags = {
+    environment = var.EnvironmentTag
+  }
 }
 
-The name of the storage disk also needs to be updated to reflect the use of count: 
+Notice that the name of the storage disk also needs to be updated to reflect the use of count: 
 
 storage_os_disk {
     name              = "${var.prefix}disk-${count.index + 1}"
@@ -53,11 +82,10 @@ resource "azurerm_network_interface" "training" {
   resource_group_name = azurerm_resource_group.training.name
 
   ip_configuration {
-    name                          = "azureuser${var.prefix}ip"
+    name                          = "azureuser${var.prefix}ip-${count.index + 1}"
     subnet_id                     = azurerm_subnet.training.id
-    private_ip_address_allocation = "dynamic"
-    #private_ip_address            = "10.0.2.5"
-    public_ip_address_id          = azurerm_public_ip.training[count.index].id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.training[count.index].id
   }
 }
 
