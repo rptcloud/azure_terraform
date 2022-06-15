@@ -41,7 +41,7 @@ variable "vm_size" {
 
   validation {
     condition     = contains(["Standard_D2s_v4", "Standard_A2", "Standard_DS1_v2"], var.vm_size)
-    error_message = "You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4."
+    error_message = "You must use an approved VM Size. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4."
   }
 }
 ```
