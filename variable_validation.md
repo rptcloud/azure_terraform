@@ -248,10 +248,10 @@ department = "ABC"
 cost_code  = "1-3-4"
 ```
 
-Execute a `terraform apply` with the variables in the `terraform.tfvars`.
+Execute a `terraform validate` with the variables in the `terraform.tfvars`.
 
 ```bash
-terraform apply
+terraform validate
 ```
 
 You will notice that the output block errors as it needs to have the `sensitive = true` value set.
