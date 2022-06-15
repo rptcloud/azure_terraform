@@ -335,18 +335,10 @@ azurerm_virtual_machine.vm
 azurerm_virtual_network.vnet
 ```
 
-Taint our VM:
-```shell
-terraform taint azurerm_virtual_machine.vm
-```
+Replace our VM using the `terraform apply -replace` option:
 
-```text
-Resource instance azurerm_virtual_machine.vm has been marked as tainted.
-```
-
-Run an `apply` and confirm:
 ```shell
-terraform apply
+terraform apply -replace azurerm_virtual_machine.vm
 ```
 
 ```text
