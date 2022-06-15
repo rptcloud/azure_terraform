@@ -143,7 +143,7 @@ Create a file `terraform.tfvars` and add the following configuration and change 
 ```hcl
 resource_group_name = "###-resourcegroup-var-validate"
 EnvironmentTag      = "staging"
-prefix              = "###"
+prefix              = "###-validate"
 location            = "East US"
 computer_name       = "myserver"
 admin_username      = "testadmin"
