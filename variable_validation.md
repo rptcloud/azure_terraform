@@ -153,6 +153,7 @@ num_vms             = 1
 ```
 
 ```bash
+terraform init
 terraform plan
 ```
 
