@@ -271,7 +271,7 @@ You will notice that the output block errors as it needs to have the `sensitive 
 ╵
 ```
 
-Update the output to set the `sensitive = true` attribute and rerun the apply.
+Update the output to set the `sensitive = true` attribute and rerun the validate.
 
 ```hcl
 output "phone_number" {
@@ -279,6 +279,12 @@ output "phone_number" {
   value = local.contact_info.phone_number
 }
 ```
+
+```bash
+terraform validate
+```
+
+After validation is succesful, apply the configuration.
 
 ```bash
 terraform apply
