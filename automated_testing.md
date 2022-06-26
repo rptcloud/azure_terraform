@@ -22,22 +22,57 @@ First, ensure you are in the `~/workstation/terraform/` directory on your workst
 ```shell
 mkdir -p ~/workstation/terraform/testing_lab
 touch ~/workstation/terraform/testing_lab/main.tf
+touch ~/workstation/terraform/testing_lab/hello.py
 ```
 
 `main.tf`
 
 ```terraform
 module "myawesomelinuxvm" {
-  source   = "./modules/my_linux_vm"
-  prefix   = "###-testing"
-  location = "East US"
-  vm_size  = "Standard_A2_v2"
-  admin_username      = "testadmin"
-  admin_password      = "Password1234!" 
+  source         = "./modules/my_linux_vm"
+  prefix         = "ghm-testing"
+  location       = "East US"
+  vm_count       = 1
+  vm_size        = "Standard_DS1_v2"
+  admin_username = "testadmin"
+  admin_password = "Password1234!"
+  flask_app_code = "hello.py"
+  flask_app_port = "8000"
+}
+
+output "public_dns" {
+  value = module.myawesomelinuxvm.public_dns
+}
+
+output "app_url" {
+  value = module.myawesomelinuxvm.app_url
 }
 ```
 
 Update the `###` in the prefix with your initials.
+
+Application Code
+
+`hello.py`
+```python
+from flask import Flask
+import requests
+
+app = Flask(__name__)
+
+import requests
+@app.route('/')
+def hello_world():
+    return """<!DOCTYPE html>
+<html>
+<head>
+    <title>Kittens</title>
+</head>
+<body>
+    <img src="http://placekitten.com/200/300" alt="User Image">
+</body>
+</html>"""
+```
 
 ### Linux VM with Flask App Module for Testing
 
@@ -46,7 +81,6 @@ Create a Module for building a Linux VM with a Flask Application that will be th
 ```shell
 mkdir -p ~/workstation/terraform/testing_lab/modules/my_linux_vm
 touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/{linux,variables,outputs,terraform}.tf
-touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/hello.py
 ```
 
 The structure for this module testing will look similar to the following file layout:
@@ -54,12 +88,12 @@ The structure for this module testing will look similar to the following file la
 ```sh
 testing_lab
 ├── main.tf
+├── hello.py
 ├── modules
 │   └── my_linux_vm
 |          └── linux.tf
 |          └── variables.tf
 |          └── outputs.tf
-|          └── hello.py
 ├── terraform.tfvars
 └── variables.tf
 ```
@@ -68,7 +102,7 @@ Insided the `my_linux_vm` directory update the terraform configuration files as 
 
 `linux.tf`
 ```terraform
-provider azurerm {
+provider "azurerm" {
   features {}
 }
 
@@ -132,16 +166,16 @@ resource "azurerm_network_security_rule" "app" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_range      = "8000"
+  destination_port_range      = var.flask_app_port
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
 }
 
 # Create network interface
 resource "azurerm_network_interface" "nic" {
-  name                      = "${var.prefix}NIC"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.rg.name
+  name                = "${var.prefix}NIC"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "${var.prefix}NICConfg"
@@ -157,7 +191,7 @@ resource "azurerm_virtual_machine" "vm" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
-  vm_size               = "Standard_DS1_v2"
+  vm_size               = var.vm_size
 
   delete_os_disk_on_termination = true
   storage_os_disk {
@@ -192,8 +226,8 @@ resource "azurerm_virtual_machine" "vm" {
       password = var.admin_password
     }
 
-    source      = "hello.py"
-    destination = "hello.py"
+    source      = var.flask_app_code
+    destination = var.flask_app_code
   }
 
   provisioner "remote-exec" {
@@ -209,7 +243,7 @@ resource "azurerm_virtual_machine" "vm" {
       "sudo apt update",
       "sudo apt install -y python3-pip python3-flask",
       "python3 -m flask --version",
-      "sudo FLASK_APP=hello.py nohup flask run --host=0.0.0.0 --port=8000 &",
+      "sudo FLASK_APP=${var.flask_app_code} nohup flask run --host=0.0.0.0 --port=${var.flask_app_port} &",
       "sleep 1"
     ]
   }
@@ -221,39 +255,50 @@ resource "azurerm_virtual_machine" "vm" {
 variable "prefix" {
   description = "Unique prefix, no dashes or numbers please."
 }
-variable "location" {}
-variable "admin_username" {}
-variable "admin_password" {}
+variable "vm_size" {
+  description = "Size of Virtual Machine"
+  default     = ""
+}
+variable "location" {
+  description = "Azure Region to deploy Virtual Machine to"
+}
+
+variable "vm_count" {
+  type        = number
+  description = "Number of Virtual Machines to provision"
+  default     = 1
+}
+
+variable "flask_app_code" {
+  type        = string
+  description = "Python Flask App Code to deploy"
+  default     = "hello.py"
+}
+
+variable "flask_app_port" {
+  type        = string
+  description = "Python Flask App Network Port"
+  default     = "8000"
+}
+
+variable "admin_username" {
+  description = "Virtual Machine User Name"
+}
+variable "admin_password" {
+  description = "Virtual Machine Password"
+}
 ```
 
 `outputs.tf`
 ```terraform
-output "app-URL" {
-  value = "http://${azurerm_public_ip.publicip.fqdn}:8000"
+output "app_url" {
+  value = split(",", "http://${azurerm_public_ip.publicip.fqdn}:${var.flask_app_port}")
+}
+
+output "public_dns" {
+  value = split(",", azurerm_public_ip.publicip.fqdn)
 }
 ```
-
-`hello.py`
-```python
-from flask import Flask
-import requests
-
-app = Flask(__name__)
-
-import requests
-@app.route('/')
-def hello_world():
-    return """<!DOCTYPE html>
-<html>
-<head>
-    <title>Kittens</title>
-</head>
-<body>
-    <img src="http://placekitten.com/200/300" alt="User Image">
-</body>
-</html>"""
-```
-
 
 ## Task 2: Write a unit test for your Terraform module
 
@@ -309,24 +354,25 @@ func TestEnvironment(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	server_dns := terraform.OutputList(t, terraformOptions, "public_dns")
-	server_ip := terraform.OutputList(t, terraformOptions, "public_ip")
+	app_url := terraform.OutputList(t, terraformOptions, "app_url")
 	
 	//pings the server ips, will fail if they do not ping. The ping will wait for 60 seconds to ensure the ip is ready and can be pinged.
 	
-	for i := 0; i < len(server_ip); i++ {
+	for i := 0; i < len(server_dns); i++ {
 		cmd := shell.Command{
 			Command: "ping",
-			Args:    []string{"-w", "180", "-c", "10", server_ip[i]},
+			Args:    []string{"-w", "180", "-c", "10", server_dns[i]},
 		}
 		shell.RunCommandAndGetOutput(t, cmd)
 	}
 
 	for i := 0; i < len(server_dns); i++ {
 		//ensure that you can http get the servers and the response is 200
-		resp, err := http.Get("http://" + server_dns[i])
+		//resp, err := http.Get("http://" + server_dns[i])
+		resp, err := http.Get(app_url[i])
 		assert.Nil(t, err)
 		defer resp.Body.Close()
-		fmt.Print("HTTP request on " + server_dns[i] + " was ")
+		fmt.Print("HTTP request on " + app_url[i] + " was ")
 		fmt.Println(resp.StatusCode)
 		assert.Equal(t, 200, resp.StatusCode)
 	}
@@ -339,23 +385,21 @@ At the end of this task you should have a file layout similar to the following:
 ```shell
 testing_lab
 ├── main.tf
+├── hello.py
 ├── modules
 │   └── my_linux_vm
 |          └── main.tf
 |          └── variables.tf
 |          └── outputs.tf
-|          └── hello.py
 │   	   └── test
 │            └── server_test.go
-├── terraform.tfvars
-└── variables.tf
 ```
 
 ## Task 3:  Use Terratest to Deploy infrastructure
 We will use Terratest to execute terraform to deploy our infrastructure into AWS.
 
 ```bash
-cd /workstation/terraform/testing_lab/modules/my_linux_vm/test
+cd ~/workstation/terraform/testing_lab/modules/my_linux_vm/test
 test_file="$(ls *test.go)"
 go mod init "${test_file%.*}"
 go mod tidy
@@ -371,7 +415,6 @@ TestEnvironment 2021-08-19T14:49:55Z logger.go:66:
 --- PASS: TestEnvironment (133.33s)
 PASS
 ok      command-line-arguments  133.336s
-student@terraform-training-chipmunk:/workstation/terraform/test > 
 ```
 
 
