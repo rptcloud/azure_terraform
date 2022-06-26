@@ -16,7 +16,7 @@ The only real way to test infrastructure code beyond static analysis is by deplo
 
 ## Task 1: Write a Terraform Module
 
-First, ensure you are in the `~/workstation/terraform/` directory in your workstation. Inside of the `~/workstation/terraform/` directory create a `testing_lab` folder add the following Terraform configuration files, using this structure.
+First, ensure you are in the `~/workstation/terraform/` directory on your workstation. Inside of the `~/workstation/terraform/` directory create a `testing_lab` folder add a `main.tf` calling a module that we will be writing and testing.
 
 ### Root Module
 ```shell
@@ -45,18 +45,18 @@ Create a Module for building a Linux VM with a Flask Application that will be th
 
 ```shell
 mkdir -p ~/workstation/terraform/testing_lab/modules/my_linux_vm
-touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/{main,variables,outputs,terraform}.tf
+touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/{linux,variables,outputs,terraform}.tf
 touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/hello.py
 ```
 
-The structure for this module testing will look similar:
+The structure for this module testing will look similar to the following file layout:
 
 ```sh
 testing_lab
 ├── main.tf
 ├── modules
 │   └── my_linux_vm
-|          └── main.tf
+|          └── linux.tf
 |          └── variables.tf
 |          └── outputs.tf
 |          └── hello.py
@@ -64,8 +64,9 @@ testing_lab
 └── variables.tf
 ```
 
+Insided the `my_linux_vm` directory update the terraform configuration files as follows:
 
-`main.tf`
+`linux.tf`
 ```terraform
 provider azurerm {
   features {}
