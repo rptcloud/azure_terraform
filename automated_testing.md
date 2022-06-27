@@ -16,7 +16,7 @@ The only real way to test infrastructure code beyond static analysis is by deplo
 
 ## Task 1: Write a Terraform Module
 
-First, ensure you are in the `~/workstation/terraform/` directory on your workstation. Inside of the `~/workstation/terraform/` directory create a `testing_lab` folder add a `main.tf` calling a module that we will be writing and testing.
+First, ensure you are in the `~/workstation/terraform/` directory on your workstation. Inside of the `~/workstation/terraform/` directory create a `testing_lab` folder add a `main.tf` calling a module that we will be writing and testing.  We will also be deploying a flask application so we need to create a `hello.py` file.
 
 ### Root Module
 ```shell
@@ -28,9 +28,9 @@ touch ~/workstation/terraform/testing_lab/hello.py
 `main.tf`
 
 ```terraform
-module "myawesomelinuxvm" {
+module "linux-python-vm" {
   source         = "./modules/my_linux_vm"
-  prefix         = "ghm-testing"
+  prefix         = "###-testing"
   location       = "East US"
   vm_count       = 1
   vm_size        = "Standard_DS1_v2"
@@ -41,11 +41,11 @@ module "myawesomelinuxvm" {
 }
 
 output "public_dns" {
-  value = module.myawesomelinuxvm.public_dns
+  value = module.linux-python-vm.public_dns
 }
 
 output "app_url" {
-  value = module.myawesomelinuxvm.app_url
+  value = module.linux-python-vm.app_url
 }
 ```
 
