@@ -129,11 +129,12 @@ resource "azurerm_subnet" "subnet" {
 
 # Create public IP
 resource "azurerm_public_ip" "publicip" {
-  name                = "${var.prefix}publicipprovision"
+  count               = var.vm_count
+  name                = "${var.prefix}publicipprovision-${count.index}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
-  domain_name_label   = "${lower(var.prefix)}publicipprovision"
+  domain_name_label   = "${lower(var.prefix)}publicipprovision-${count.index}"
 }
 
 # Create Network Security Group and rules
@@ -173,29 +174,31 @@ resource "azurerm_network_security_rule" "app" {
 
 # Create network interface
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.prefix}NIC"
+  count               = var.vm_count
+  name                = "${var.prefix}NIC-${count.index}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "${var.prefix}NICConfg"
+    name                          = "${var.prefix}NICConfg-${count.index}"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.publicip.id
+    public_ip_address_id          = azurerm_public_ip.publicip[count.index].id
   }
 }
 
 # Create a Linux virtual machine
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "${var.prefix}TFVM"
+  count                 = var.vm_count
+  name                  = "${var.prefix}TFVM-${count.index}"
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic.id]
+  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
   vm_size               = var.vm_size
 
   delete_os_disk_on_termination = true
   storage_os_disk {
-    name              = "${var.prefix}OsDisk"
+    name              = "${var.prefix}OsDisk-${count.index}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -209,7 +212,7 @@ resource "azurerm_virtual_machine" "vm" {
   }
 
   os_profile {
-    computer_name  = "${var.prefix}TFVM"
+    computer_name  = "${var.prefix}TFVM-${count.index}"
     admin_username = var.admin_username
     admin_password = var.admin_password
   }
@@ -220,7 +223,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   provisioner "file" {
     connection {
-      host     = azurerm_public_ip.publicip.fqdn
+      host     = azurerm_public_ip.publicip[count.index].fqdn
       type     = "ssh"
       user     = var.admin_username
       password = var.admin_password
@@ -232,7 +235,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   provisioner "remote-exec" {
     connection {
-      host     = azurerm_public_ip.publicip.fqdn
+      host     = azurerm_public_ip.publicip[count.index].fqdn
       type     = "ssh"
       user     = var.admin_username
       password = var.admin_password
@@ -292,11 +295,11 @@ variable "admin_password" {
 `outputs.tf`
 ```terraform
 output "app_url" {
-  value = split(",", "http://${azurerm_public_ip.publicip.fqdn}:${var.flask_app_port}")
+  value = [for i in azurerm_public_ip.publicip.*.fqdn : "http://${i}:${var.flask_app_port}"]
 }
 
 output "public_dns" {
-  value = split(",", azurerm_public_ip.publicip.fqdn)
+  value = azurerm_public_ip.publicip.*.fqdn
 }
 ```
 
@@ -424,7 +427,7 @@ Terratest allows us to validate that the infrastructure works correctly in that 
 
 For a full list of every function Terratest provides, visit their documentation [here](https://pkg.go.dev/github.com/gruntwork-io/terratest)
 
-While Terratest has many built-in functions, you can also use other Go packages in conjunction with Terratest. For instance, you can create a Terraform configuration that creates an EC2 instance with specific tags. In conjunction with the AWS package in Go, you can connect to AWS and use the AWS Go package's functions to ensure the EC2 exists and has the specified tags in your configuration file.
+While Terratest has many built-in functions, you can also use other Go packages in conjunction with Terratest. For instance, you can create a Terraform configuration that creates a VM instance with specific tags. In conjunction with the Azure package in Go, you can connect to Azure and use the Azure Go package's functions to ensure the Virtual Machine exists and has the specified tags in your configuration file.
 
 Finally, you can have your test fail if something is not as it should be. With the "assert" package in Go, you can ensure your outputs are as expected, causing the test to fail if they are not.
 
@@ -436,4 +439,4 @@ The final step of our test is to undeploy everything at the end. Terratest allow
 	defer terraform.Destroy(t, terraformOptions)
 ```
 
-In Go, defer is a statement that will tell your test to run this command last no matter what. Even if the test fails, or errors out somewhere in the code during runtime, this terraform.Destroy line will always run to ensure your test infrastructure doesn't become unmanaged by Terraform and difficult to find.
+In Go, defer is a statement that will tell your test to run this command last no matter what. Even if the test fails, or errors out somewhere in the code during runtime, this `terraform.Destroy` line will always run to ensure your test infrastructure doesn't become unmanaged by Terraform and difficult to find.
