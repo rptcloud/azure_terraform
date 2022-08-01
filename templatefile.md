@@ -9,7 +9,7 @@ This lab demonstrates the use of the `templatefile` to read a file at the given 
 
 
 ## Task 1: Create a Dashboard using Terraform
-### Step 1.1.1: Create Azure Dashboard
+### Step 1.1.1: Create an Azure Dashboard
 
 Build the dashboard using the Azure Virtual Machine Module
 
