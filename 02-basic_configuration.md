@@ -11,7 +11,14 @@ You'll receive login information for your workstation from the instructor. This 
 
 ## Task 1: Create a basic Terraform configuration for an Azure resource group using your workstation and initials as the resource group name
 
-Create a `main.tf` inside the azure working directory and paste the Terraform configuration for an Azure resource group.  Replace the prefix with with your intials.
+Create a working directory with a `main.tf` file.
+
+```bash
+mkdir /root/workstation/terraform/azure
+touch /root/workstation/terraform/azure/main.tf
+```
+
+Update the `main.tf` inside the azure working directory and paste the Terraform configuration for an Azure resource group.  Replace the prefix with with your intials.
 ```
 provider "azurerm" {
   features {}
