@@ -4,7 +4,7 @@ Duration: 15 minutes
 
 This lab demonstrates the use of the `templatefile` to read a file at the given path and renders its content as a template using a supplied set of template variables.
 
-- Task 1: Create a Azure via Terraform
+- Task 1: Create an Azure Dashboard via Terraform
 - Task 2: Use `templatefile` to render the dasboard layout.
 
 
