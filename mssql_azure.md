@@ -2,6 +2,8 @@
 
 ### Utilize a Public Module to create a MSSQL Database in Azure
 
+Be sure to update the `###` for the `sqlserver_name` with your initials 
+
 `main.tf`
 
 ```hcl
@@ -29,7 +31,7 @@ module "mssql-server" {
 
   # SQL Server and Database details
   # The valid service objective name for the database include S0, S1, S2, S3, P1, P2, P4, P6, P11 
-  sqlserver_name               = "te-sqldbserver01"
+  sqlserver_name               = "###-sqldbserver01"
   database_name                = "demomssqldb"
   sql_database_edition         = "Standard"
   sqldb_service_objective_name = "S1"
@@ -116,4 +118,3 @@ output "sql_database_location" {
 ```
 
 ### Connect to the database using the Server FQDN, Database Name, User and Password
-
