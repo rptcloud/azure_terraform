@@ -41,7 +41,7 @@ variable "vm_size" {
 
   validation {
     condition     = contains(["Standard_D2s_v4", "Standard_A2", "Standard_DS1_v2"], var.vm_size)
-    error_message = "You must use an approved operating system. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4."
+    error_message = "You must use an approved VM Size. Options are Standard_A2, Standard_DS1_v2 or Standard_D2s_v4."
   }
 }
 ```
@@ -143,7 +143,7 @@ Create a file `terraform.tfvars` and add the following configuration and change 
 ```hcl
 resource_group_name = "###-resourcegroup-var-validate"
 EnvironmentTag      = "staging"
-prefix              = "###"
+prefix              = "###-validate"
 location            = "East US"
 computer_name       = "myserver"
 admin_username      = "testadmin"
@@ -153,6 +153,7 @@ num_vms             = 1
 ```
 
 ```bash
+terraform init
 terraform plan
 ```
 
@@ -247,10 +248,10 @@ department = "ABC"
 cost_code  = "1-3-4"
 ```
 
-Execute a `terraform apply` with the variables in the `terraform.tfvars`.
+Execute a `terraform validate` with the variables in the `terraform.tfvars`.
 
 ```bash
-terraform apply
+terraform validate
 ```
 
 You will notice that the output block errors as it needs to have the `sensitive = true` value set.
@@ -270,7 +271,7 @@ You will notice that the output block errors as it needs to have the `sensitive 
 ╵
 ```
 
-Update the output to set the `sensitive = true` attribute and rerun the apply.
+Update the output to set the `sensitive = true` attribute and rerun the validate.
 
 ```hcl
 output "phone_number" {
@@ -278,6 +279,12 @@ output "phone_number" {
   value = local.contact_info.phone_number
 }
 ```
+
+```bash
+terraform validate
+```
+
+After validation is succesful, apply the configuration.
 
 ```bash
 terraform apply

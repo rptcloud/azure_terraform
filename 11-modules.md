@@ -75,7 +75,7 @@ resource "azurerm_network_interface" "main" {
   ip_configuration {
     name                          = "config1"
     subnet_id                     = azurerm_subnet.main.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.main.id
   }
 }
@@ -86,6 +86,9 @@ resource "azurerm_virtual_machine" "main" {
   resource_group_name   = azurerm_resource_group.main.name
   network_interface_ids = [azurerm_network_interface.main.id]
   vm_size               = var.vm_size
+  
+  delete_os_disk_on_termination = true
+  delete_data_disks_on_termination = true
 
   storage_image_reference {
     publisher = "Canonical"
