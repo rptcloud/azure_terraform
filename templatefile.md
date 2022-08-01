@@ -4,7 +4,7 @@ Duration: 15 minutes
 
 This lab demonstrates the use of the `templatefile` to read a file at the given path and renders its content as a template using a supplied set of template variables.
 
-- Task 1: Create a Azure Dashboard via Terraform
+- Task 1: Create a Azure via Terraform
 - Task 2: Use `templatefile` to render the dasboard layout.
 
 
@@ -39,7 +39,7 @@ resource "azurerm_resource_group" "my-group" {
   location = "East US"
 }
 
-resource "azurerm_dashboard" "my-board" {
+resource "azurerm_portal_dashboard" "my-board" {
   name                = "###-cool-dashboard"
   resource_group_name = azurerm_resource_group.my-group.name
   location            = azurerm_resource_group.my-group.location
@@ -159,7 +159,7 @@ DASH
 }
 
 output "dashboard_url" {
-  value = "https://portal.azure.com/#@riverpointtechnology.com/dashboard/arm${azurerm_dashboard.my-board.id}"
+  value = "https://portal.azure.com/#@riverpointtechnology.com/dashboard/arm${azurerm_portal_dashboard.my-board.id}"
 }
 
 ```
