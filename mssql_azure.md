@@ -2,8 +2,6 @@
 
 ### Utilize a Public Module to create a MSSQL Database in Azure
 
-Be sure to update the `###` for the `sqlserver_name` with your initials 
-
 `main.tf`
 
 ```hcl
@@ -85,7 +83,8 @@ module "mssql-server" {
 }
 ```
 
-Replace the `start_ip_address` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
+Replace the `###` for the `sqlserver_name` in the code above with your initials.
+Also replace the `start_ip_address` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
 
 ```shell
 curl ifconfig.me
