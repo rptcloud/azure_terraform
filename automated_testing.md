@@ -308,7 +308,7 @@ output "public_dns" {
 Install Go on your training workstation
 
 ```bash
- wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+wget -c https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
 export PATH=$PATH:/usr/local/go/bin
 ```
 
