@@ -29,7 +29,7 @@ module "mssql-server" {
 
   # SQL Server and Database details
   # The valid service objective name for the database include S0, S1, S2, S3, P1, P2, P4, P6, P11 
-  sqlserver_name               = "te-sqldbserver01"
+  sqlserver_name               = "###-sqldbserver01"
   database_name                = "demomssqldb"
   sql_database_edition         = "Standard"
   sqldb_service_objective_name = "S1"
@@ -83,7 +83,8 @@ module "mssql-server" {
 }
 ```
 
-Replace the `start_ip_address` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
+Replace the `###` for the `sqlserver_name` in the code above with your initials.
+Also replace the `start_ip_address` and `end_ip_address` above to the IP of your workstation.  This can be obtained by running:
 
 ```shell
 curl ifconfig.me
@@ -116,4 +117,3 @@ output "sql_database_location" {
 ```
 
 ### Connect to the database using the Server FQDN, Database Name, User and Password
-

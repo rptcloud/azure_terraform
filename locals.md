@@ -10,7 +10,17 @@ A local value assigns a name to an expression, so you can use it multiple times 
 
 ## Task 1: Create local variables in a configuration block
 
-Add local variables to a `local.tf` file:
+Create a new working directory with a handful of terraform configuration files:
+
+```bash
+mkdir /root/workstation/terraform/azure/locals
+touch /root/workstation/terraform/azure/locals/main.tf
+touch /root/workstation/terraform/azure/locals/terraform.tfvars
+touch /root/workstation/terraform/azure/locals/variables.tf
+touch /root/workstation/terraform/azure/locals/locals.tf
+```
+
+Add local variables to the `local.tf` file:
 
 ```hcl
 locals {
@@ -20,7 +30,7 @@ locals {
 }
 ```
 
-Add input variables to a `variables.tf` file:
+Add input variables to the `variables.tf` file:
 
 ```hcl
 variable "resource_group_name" {}
@@ -37,7 +47,7 @@ variable "num_vms" {
 }
 ```
 
-Add a `terraform.tfvars` file and replace the ### items with your initials:
+Update the `terraform.tfvars` file and replace the ### items with your initials:
   
 ```hcl
 resource_group_name = "###-resourcegroup-locals"
@@ -52,7 +62,7 @@ num_vms             = 1
   
 ## Task 2: Interpolate local variables into your code
 
-Create a `main.tf` to add new tags to all instances using local variable interpolation.
+Update the `main.tf` to add new tags to all instances using local variable interpolation.
 
 ```hcl
 provider "azurerm" {
