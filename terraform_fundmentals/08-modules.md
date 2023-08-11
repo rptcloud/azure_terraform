@@ -1,22 +1,26 @@
-# Terraform Modules
+# Lab: Terraform Modules
 
-## Expected Outcome
+Duration: 10 minutes
 
 In this challenge, you will create a module to contain a scalable virtual machine deployment, then create an environment where you will call the module.
 
-## How to
+- Task 1: Create Folder Structure
+- Task 2: Create the Module
+- Task 3: Create Variables in Root
+- Task 4: Pass in Variables
+- Task 5: Create the Module declaration in Root
+- Task 6: Terraform Init, Plan, and Apply
+- Task 7: Add Another Module
 
-### Create Folder Structure
+## Create Folder Structure
 
 If you haven't already, `terraform destroy` your previous work.
 
 Create and change directory into a folder specific to this challenge.
 
-For example: `lab_exercise`
-
 In order to organize your code inside the `lab_exercise` directory, create the following folder structure with `main.tf`, `variables.tf` and `terraform.tfvars` files.
 
-```sh
+```bash
 lab_exercise
 ├── main.tf
 ├── modules
@@ -26,9 +30,20 @@ lab_exercise
 └── variables.tf
 ```
 
-### Create the Module
+```bash
+cd /root/workstation/terraform/
+mkdir -p lab_exercise/modules/my_linux_vm
+cd lab_exercise
+touch {main,variables}.tf
+touch terraform.tfvars
+touch modules/my_linux_vm/main.tf
+```
 
-Inside the `my_linux_vm` module folder create a `main.tf` file with the following contents:
+Open the folder `lab_exercise` in your code editor.
+
+## Create the Module
+
+Inside the `my_linux_vm` module folder populate the `main.tf` file with the following contents:
 
 > Note: This is very similar to the original VM lab.
 
@@ -37,10 +52,6 @@ variable "prefix" {}
 variable "location" {}
 variable "username" {}
 variable "vm_size" {}
-
-provider "azurerm" {
-  features {}
-}
 
 resource "random_password" "password" {
   length           = 16
@@ -75,7 +86,7 @@ resource "azurerm_network_interface" "main" {
   ip_configuration {
     name                          = "config1"
     subnet_id                     = azurerm_subnet.main.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.main.id
   }
 }
@@ -134,7 +145,7 @@ output "public-ip" {
 }
 ```
 
-### Create Variables in Root
+## Create Variables in Root
 
 In your root directory, there should be a `variables.tf` file.
 
@@ -152,20 +163,24 @@ variable "username" {}
 
 ### Pass in Variables
 
-Create a file called 'terraform.tfvars' and add the following variables:
+Populate 'terraform.tfvars' with the following values:
 Make sure to replace "###" with your initials
 
-```sh
+```hcl
 prefix   = "###" 
 location = "East US"
 username = "Plankton"
 ```
 
-### Create the Module declaration in Root
+## Create the Module declaration in Root
 
 Update the root `main.tf` to declare your module, it should look similar to this:
 
 ```hcl
+provider "azurerm" {
+  features {}
+}
+
 module "myawesomelinuxvm-a" {
   source   = "./modules/my_linux_vm"
 }
@@ -177,17 +192,16 @@ module "myawesomelinuxvm-a" {
 
 Run `terraform init`.
 
-```sh
+```bash
 Initializing modules...
-- module.myawesomewindowsvm
-  Getting source "./modules/my_linux_vm"
+- myawesomelinuxvm-a in modules/my_linux_vm
 ```
 
 ### Terraform Plan
 
 Run `terraform plan`.
 
-```sh
+```bash
 
 Error: Missing required argument
 
@@ -231,13 +245,13 @@ module "myawesomelinuxvm-a" {
   prefix   = "${var.prefix}a"
   location = var.location
   username = var.username
-  vm_size  = "Standard_A2_v2"
+  vm_size  = "Standard_D2s_v4"
 }
 ```
 
 Run `terraform plan` again, this time there should not be any errors and you should see your VM built from your module.
 
-```sh
+```bash
   + module.myawesomelinuxvm-a.azurerm_resource_group.module
       id:                                 <computed>
       location:                           "eastus"
@@ -257,18 +271,18 @@ module "myawesomelinuxvm-b" {
   prefix   = "${var.prefix}b"
   location = var.location
   username = var.username
-  vm_size  = "Standard_A2_v2"
+  vm_size  = "Standard_D2s_v4"
 }
 ```
 
-## Terraform Plan
+### Terraform Plan
 
 Since we added another module call, we must run `terraform init` again before running `terraform plan`.
 
 We should see twice as much infrastructure in our plan.
 
-```sh
-  # module.myawesomewindowsvm.azurerm_resource_group.main will be created
+```bash
+  # module.myawesomelinuxvm-a.azurerm_resource_group.main will be created
   + resource "azurerm_resource_group" "main" {
       + id       = (known after apply)
       + location = "eastus"
@@ -276,7 +290,7 @@ We should see twice as much infrastructure in our plan.
 
 ...
 
-  # module.differentwindowsvm.azurerm_resource_group.main will be created
+  # module.myawesomelinuxvm-b.azurerm_resource_group.main will be created
   + resource "azurerm_resource_group" "main" {
       + id       = (known after apply)
       + location = "eastus"
@@ -296,7 +310,7 @@ Extract "vm_size" into a local variable to your environment `main.tf` and refere
 
 ```hcl
 locals {
-  vm_size = "Standard_A2_v2"
+  vm_size = "Standard_D2s_v4"
 }
 ```
 
@@ -314,7 +328,7 @@ module "myawesomelinuxvm-b" {
 }
 ```
 
-## Terraform Plan
+### Terraform Plan Again
 
 Run `terraform plan` and verify that your plan succeeds and looks the same.
 
@@ -334,16 +348,16 @@ output "public_ip_vm_b" {
 }
 ```
 
-Run `terraform refresh` to view these outputs.
+Run `terraform apply -refresh-only` to view these outputs.
 
+## Cleanup
 
-## Cleanup 
 Once complete, run a `terraform destroy` to tear down the infrastructure.
 
 ## Advanced areas to explore
 
 1. Extract the Resource Group, Virtual Network, and Subnet into a "Networking" module and the Network Interface and Virtual Machine into a "VM" module and reference them with module declarations.
-2. Update the VM module to use SSH instead of password authentication. 
+2. Update the VM module to use SSH instead of password authentication.
 3. Add a reference to the Public Terraform Module for [Azure Compute](https://registry.terraform.io/modules/Azure/compute/azurerm)
 
 ## Resources

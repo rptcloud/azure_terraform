@@ -1,8 +1,13 @@
-# Using Terraform Provisioner
+# Lab: Using Terraform Provisioners
 
-## Expected Outcome
+Duration: ?? minutes
 
 In this challenge, you will create a Azure Virtual Machine but this time layer in Terraform Provisioners to configure the machines as part the Terraform apply.
+
+- Task 1: Defining a provisioner
+- Task 2: Running provisioners
+- Task 3: Failed provisioners and replacing resources
+- Task 4: Destroy Provisioners
 
 ## Background
 
