@@ -1,16 +1,16 @@
-# Lab 8: Meta-Arguments
+# Lab: Meta-Arguments
 
 Duration: 10 minutes
 
-So far, we've already used arguments to configure your resources. These arguments are used by the provider to specify things like the image to use, and the type of instance to provision. Terraform also supports a number of _Meta-Arguments_, which changes the way Terraform configures the resources. For instance, it's not uncommon to provision multiple copies of the same resource. We can do that with the _count_ argument.
+So far, we've already used arguments to configure your resources. These arguments are used by the provider to specify things like the image to use, and the type of instance to provision. Terraform also supports a number of _Meta-Arguments_, which change the way Terraform configures the resources. For instance, it's not uncommon to provision multiple copies of the same resource. We can do that with the _count_ argument.
 
-- Task 1: Change the number of Virtul Machines with `count`
+- Task 1: Change the number of Virtual Machines with `count`
 - Task 2: Modify the rest of the configuration to support multiple instances
-- Task 3: Add variable interpolation to the count arguement
+- Task 3: Add variable interpolation to the count argument
 
 ## Task 1: Change the number of Azure Virtual Machines with `count`
 
-### Step 8.1.1
+We are going to reuse the configuration in the `azure` directory from the exercises `02-basic-configuration` and `03-virtual_machine`. If you don't have those configurations, they are in the appendix of this lab.
 
 Add a count argument to the Azure Virtual Machine resource in `main.tf` with a value of 2.  Also adjust the value of `name` to incrementally add a number to the end of each instances name: 
 
@@ -22,18 +22,15 @@ resource "azurerm_virtual_machine" "training" {
   location              = azurerm_resource_group.training.location
   resource_group_name   = azurerm_resource_group.training.name
   network_interface_ids = [azurerm_network_interface.training[count.index].id]
-  vm_size               = "Standard_F2"
-# ... leave the rest of the resource block unchanged...
-}
-
-The name of the storage disk also needs to be updated to reflect the use of count: 
+  vm_size               = "Standard_D2s_v4"
+# ...  
 
 storage_os_disk {
     name              = "${var.prefix}disk-${count.index + 1}"
   # ... leave the rest of the resource block unchanged...
 ```
 
-as well as the public_ip, network interface
+We also need to update the `azurerm_public_ip` and `azurerm_network_interface` resources to support the additional virtual machines.
 
 ```hcl
 resource "azurerm_public_ip" "training" {
@@ -93,19 +90,21 @@ You should see two dns addresses in the outputs, one for each virtual machine.
 Plan: 2 to add, 0 to change, 1 to destroy.
 ```
 
-## Task 3: Add variable interpolation to the count arguement
+## Task 3: Add variable interpolation to the count argument
 
 ### Step 8.3.1
 
 Update `variables.tf` to add a new variable definition, and use it:
 
 ```hcl
-# ...
 variable "num_vms" {
+  type = number
   default = 2
 }
 ```
+
 Update `main.tf`
+
 ```hcl
 resource "azurerm_public_ip" "training" {
   count                   = var.num_vms
@@ -117,17 +116,13 @@ resource "azurerm_network_interface" "training" {
 
 resource "azurerm_virtual_machine" "training" {
   count        = var.num_vms
-  name         = "${var.prefix}vm-${count.index + 1}"
 # ...
 
 
 ```
 
-The solution builds on our previous discussion of variables. We must create a
-variable to hold our count so that we can reference that count in our
-resource. Next, we replace the value of the count parameter with the variable
-interpolation. Finally, we interpolate the current count (+ 1 because it's
-zero-indexed) and the variable itself.
+The solution builds on our previous discussion of variables. We must create a variable to hold our count so that we can reference that count in our resource. Next, we replace the value of the count parameter with the variable
+interpolation. Finally, we interpolate the current count (+ 1 because it's zero-indexed) and the variable itself.
 
 Remember to also add the variable declaration to your `terraform.tfvars` accordingly.
 
@@ -144,9 +139,157 @@ terraform apply
 ```
 
 ```text
-No changes. Infrastructure is up-to-date.
+No changes. Your infrastructure matches the configuration.
 
-This means that Terraform did not detect any differences between your
-configuration and real physical resources that exist. As a result, no
-actions need to be performed.
+Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
+```
+
+## Appendix
+
+Here is the full configuration for the `azure` deployment before this lab in case you need it. It has been condensed into a single file for simplicity.
+
+**`main.tf`**
+
+```hcl
+variable "location" {
+  type        = string
+  description = "The Azure Region in which all resources in this example should be created. Defaults to East US."
+  default     = "East US"
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "The name of the resource group in which all resources in this example should be created."
+}
+
+variable "EnvironmentTag" {
+  type        = string
+  description = "The environment tag for all resources in this example."
+}
+
+variable "prefix" {
+  type        = string
+  description = "The prefix which should be used for all resources in this example. Set to your initials."
+}
+
+variable "computer_name" {
+  type        = string
+  description = "The name of the virtual machine."
+}
+
+variable "admin_username" {
+  type        = string
+  description = "The username of the virtual machine."
+}
+
+variable "admin_password" {
+  type        = string
+  description = "The password of the virtual machine."
+}
+
+locals {
+  common_tags = {
+    environment  = var.EnvironmentTag
+    service_name = "Automation"
+    owner        = "Cloud Team"
+    createdby    = "terraform"
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "training" {
+  name     = var.resource_group_name
+  location = var.location
+}
+
+resource "azurerm_virtual_network" "training" {
+  name                = "azureusernsbvn"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+}
+
+resource "azurerm_subnet" "training" {
+  name                 = "azureusernsbsub"
+  resource_group_name  = azurerm_resource_group.training.name
+  virtual_network_name = azurerm_virtual_network.training.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+
+resource "azurerm_public_ip" "training" {
+  name                    = "azureusernsbip"
+  location                = azurerm_resource_group.training.location
+  resource_group_name     = azurerm_resource_group.training.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+  domain_name_label       = "azureusernsbdomain"
+}
+
+resource "azurerm_network_interface" "training" {
+  name                = "azureusernsbni"
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
+
+  ip_configuration {
+    name                          = "azureusernsbip"
+    subnet_id                     = azurerm_subnet.training.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.0.2.5"
+    public_ip_address_id          = azurerm_public_ip.training.id
+  }
+}
+
+resource "azurerm_virtual_machine" "training" {
+  name                  = "${var.prefix}vm"
+  location              = azurerm_resource_group.training.location
+  resource_group_name   = azurerm_resource_group.training.name
+  network_interface_ids = [azurerm_network_interface.training.id]
+  vm_size               = "Standard_D2s_v4"
+
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "${var.prefix}disk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = var.computer_name
+    admin_username = var.admin_username
+    admin_password = var.admin_password
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+
+  tags = local.common_tags
+}
+
+output "public_dns" {
+  value = azurerm_public_ip.training.fqdn
+}
+```
+
+**`terraform.tfvars`**
+
+```hcl
+resource_group_name = "nsb-resourcegroup"
+EnvironmentTag      = "staging"
+prefix              = "###" # change to your initials
+location            = "East US"
+computer_name       = "myserver"
+admin_username      = "testadmin"
+admin_password      = "Password1234!"
 ```

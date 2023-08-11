@@ -10,7 +10,14 @@ present this data in DOT format, which is used by GraphVis and similar programs 
 
 ## Task 1
 
-### Step 7.1.1
+Go into an existing configuration directory and redeploy the configuration if you destroyed it earlier.
+
+```bash
+cd /root/workstation/terraform/azure
+terraform apply -auto-approve
+```
+
+### Use the Graph Command
 
 Run `terraform graph` in your terraform directory and note the output.
 
@@ -28,6 +35,6 @@ digraph {
 }
 ```
 
-### Step 7.1.2
+### View the Graph
 
-Paste that output into [webgraphviz](http://www.webgraphviz.com) to get a visual representation of dependencies that Terraform creates for your configuration.
+Paste the output into [webgraphviz](http://www.webgraphviz.com) to get a visual representation of dependencies that Terraform creates for your configuration.
