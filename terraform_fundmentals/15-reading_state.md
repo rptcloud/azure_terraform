@@ -1,4 +1,4 @@
-# Lab 12: State
+# Lab: State
 
 Duration: 10 minutes
 
@@ -7,15 +7,11 @@ This lab demonstrates how to read state from another Terraform project. It uses 
 - Task 1:  Create a Terraform configuration that defines an output
 - Task 2:  Read an output value from that project's state
 
-## Prerequisites
-
-This lab only requires a copy of [Terraform](https://www.terraform.io/downloads.html). It doesn't require any cloud provider credentials.
-
 ## Task 1: Create a Terraform configuration that defines an output
 
 For this task, you'll create two Terraform configurations in two separate directories. One will read from the other (using state files).
 
-### Step 1.1.1
+### Step 1.1
 
 In this step, you'll create a Terraform project on disk that does nothing but emit an output. It should emit `public_ip` which can be a hard-coded value (for simplicity).
 
@@ -38,7 +34,7 @@ output "public_ip" {
 }
 ```
 
-### Step 1.1.2
+### Step 1.2
 
 Generate a state file for the project. Within that project, run `terraform init` and `apply`. You should see a `terraform.tfstate` file after running these commands.
 
@@ -54,7 +50,7 @@ terraform apply
 
 ## Task 2: Read an output value from that project's state
 
-### Step 1.2.1
+### Step 2.1
 
 Create a new Terraform configuration that uses a data source to read the configuration from the `primary` project.
 
@@ -87,7 +83,7 @@ Initialize the secondary project with `init`.
 terraform init
 ```
 
-### Step 1.2.2
+### Step 2.2
 
 Declare the `public_ip` as an `output`.
 

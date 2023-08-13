@@ -54,4 +54,5 @@ resource "azurerm_virtual_machine" "training" {
 ```
 
 ### 2. Run `terraform plan` to view the resources that will be created
+
 ### 3. Run `terraform apply` to create the resources specified

@@ -7,7 +7,7 @@ This lab demonstrates how to use lifecycle directives to control the order in wh
 - Task 1: Use `create_before_destroy` with an instance rename
 - Task 2: Use `prevent_destroy` with an instance
 
-### Create the base Terraform Configuration
+## Create the base Terraform Configuration
 
 Change directory into a folder specific to this challenge, and create a `main.tf` and `terraform.tfvars` files to hold our configuration.
 
@@ -23,7 +23,7 @@ We will start with a few of the basic resources needed.
 
 When you rename a Azure Virtual Machine, terraform will reprovision the resource (delete and then create a new instance).  We can leverage `create_before_destroy` to override that default behavior
 
-### Step 6.1.1: Deploy your Azure Virtual Machine
+### Step 1.1: Deploy your Azure Virtual Machine
 
 Place the following configuration in your `main.tf` file to deploy your virtual machine.
 
@@ -136,7 +136,7 @@ vm_size             = "Standard_A2_v2"
 - Run a `terraform plan`
 - Run a `terraform apply`
 
-### Step 6.1.2: Rename your Azure Virtual Machine
+### Step 1.2: Rename your Azure Virtual Machine
 
 Edit your `main.tf` file and add the suffix _renamed_ to the value for `name` as shown below:
 
@@ -170,7 +170,7 @@ Terraform will perform the following actions:
 
 Answer `yes` to proceed with the replacement of the instances.
 
-### Step 6.1.3: Use `create_before_destroy` and rename the instances again
+### Step 1.3: Use `create_before_destroy` and rename the instances again
 
 Add a `lifecycle` configuration to the `azurerm_virtual_machine` resource. Specify that this resource should be created before the existing instance(s) are destroyed.  Additionally, rename the instance(s) again, by removing the suffix _renamed_, and replacing it with `new`
 
@@ -189,7 +189,7 @@ resource "azurerm_virtual_machine" "main" {
 }
 ```
 
-Also update the `azurerm_network_interface` with a lifecyle block and new name:
+Also update the `azurerm_network_interface` with a lifecycle block and new name:
 
 ```hcl
 resource "azurerm_network_interface" "main" {
@@ -245,7 +245,7 @@ Terraform will perform the following actions:
 
 We'll demonstrate how `prevent_destroy` can be used to guard an instance from being destroyed.
 
-### Step 6.2.1: Use `prevent_destroy`
+### Step 2.1: Use `prevent_destroy`
 
 Add `prevent_destroy = true` to the same `lifecycle` stanza where you added `create_before_destroy`.
 
@@ -263,11 +263,11 @@ resource "azurerm_virtual_machine" "main" {
 
 Attempt to destroy the existing infrastructure. You should see the error that follows.
 
-```shell
+```bash
 terraform destroy
 ```
 
-```
+```bash
 Error: Instance cannot be destroyed
 
   on main.tf line 32:
@@ -280,7 +280,7 @@ lifecycle.prevent_destroy or reduce the scope of the plan using the -target
 flag.
 ```
 
-### Step 6.2.2: Destroy cleanly
+### Step 2.2: Destroy cleanly
 
 Now that you have finished the steps in this lab, destroy the infrastructure you have created.
 

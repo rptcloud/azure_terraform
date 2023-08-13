@@ -5,11 +5,11 @@ Duration: 15 minutes
 This lab demonstrates the use of the `templatefile` to read a file at the given path and renders its content as a template using a supplied set of template variables.
 
 - Task 1: Create a Azure Dashboard via Terraform
-- Task 2: Use `templatefile` to render the dasboard layout.
-
+- Task 2: Use `templatefile` to render the dashboard layout.
 
 ## Task 1: Create a Dashboard using Terraform
-### Step 1.1.1: Create Azure Dashboard
+
+### Step 1.1: Create Azure Dashboard
 
 Build the dashboard using the Azure Virtual Machine Module
 
@@ -165,20 +165,22 @@ output "dashboard_url" {
 ```
 Then perform an `init`, `plan`, and `apply`.
 
-## Task 2: Use `templatefile` to render the dasboard layout.
-### Step 1.2.1: Use `templatefile`
+## Task 2: Use `templatefile` to render the dasboard layout
+
+### Step 2.1: Use `templatefile`
 
 1. Create a `templates` directory in the same directory as your `main.tf`
 2. Create a `dash.tpl` file inside the `templates` directory.
 
 For example: `/terraform/azure/template_lab` which contains:
-```sh
+
+```bash
 ├ main.tf
 └ templates
     └── dash.tpl
 ```
 
-Add the follwing content to the `dash.tpl` file:
+Add the following content to the `dash.tpl` file:
 
 ```txt
 {
@@ -312,9 +314,10 @@ Replace with the following
 ```
 Initialize the configuration with a `terraform init` followed by a `plan` and `apply`.
 
-### Step 1.2.3: Destroy
+### Step 2.3: Destroy
+
 Finally, run `destroy`.
 
-```shell
+```bash
 terraform destroy
 ```

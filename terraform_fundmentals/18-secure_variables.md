@@ -28,7 +28,7 @@ terraform {
     }
   }
 
-  backend "remote" {
+  cloud {
       organization = "YOUR_ORGANIZATION_NAME"
 
       workspaces {
@@ -78,7 +78,7 @@ resource "azurerm_subnet" "training" {
 
 ## Task 2: Login to TFC and initialize the configuration
 
-Log into your TFC account:
+Log into your TFC account (this is only necessary once per sandbox, you can skip this step if you've already logged into Terraform Cloud):
 
 ```bash
 terraform login

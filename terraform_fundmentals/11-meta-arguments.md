@@ -12,7 +12,7 @@ So far, we've already used arguments to configure your resources. These argument
 
 We are going to reuse the configuration in the `azure` directory from the exercises `02-basic-configuration` and `03-virtual_machine`. If you don't have those configurations, they are in the appendix of this lab.
 
-Add a count argument to the Azure Virtual Machine resource in `main.tf` with a value of 2.  Also adjust the value of `name` to incrementally add a number to the end of each instances name: 
+Add a count argument to the Azure Virtual Machine resource in `main.tf` with a value of 2.  Also adjust the value of `name` to incrementally add a number to the end of each instances name:
 
 ```hcl
 # ...
@@ -62,7 +62,7 @@ resource "azurerm_network_interface" "training" {
 
 ## Task 2: Modify the rest of the configuration to support multiple instances
 
-### Step 8.2.1
+### Step 2.1
 
 If you run `terraform apply` now, you'll get an error. Since we added _count_ to the azure_virtual_machine.training resource, it now refers to multiple resources. Because of this, values like our public_dns output no longer refer to the "public dns" of a single resource. We need to tell terraform which resource we're referring to.
 
@@ -74,9 +74,9 @@ output "public_dns" {
 }
 ```
 
-The syntax `azurerm_public_ip.training[*]...` refers to all of the instances, so this will output a list of all dns entries. 
+The syntax `azurerm_public_ip.training[*]...` refers to all of the instances, so this will output a list of all dns entries.
 
-### Step 8.2.2
+### Step 2.2
 
 Run `terraform apply` to add the new instance. You will notice that because we changed the name of the Azure Virtual Mahine, that there will be a forced replacement of our previous virutal machine.
 
@@ -92,7 +92,7 @@ Plan: 2 to add, 0 to change, 1 to destroy.
 
 ## Task 3: Add variable interpolation to the count argument
 
-### Step 8.3.1
+### Step 3.1
 
 Update `variables.tf` to add a new variable definition, and use it:
 
@@ -130,7 +130,7 @@ Remember to also add the variable declaration to your `terraform.tfvars` accordi
 num_vms = 2
 ```
 
-### Step 8.3.2
+### Step 3.2
 
 Run `terraform apply` in the terraform directory. No changes should be detected as the _values_ have not changed:
 
