@@ -9,8 +9,8 @@ In this challenge, you will:
 - Create a Resource Group
 - Get the Resource Group ID
 - Build a Azure Resource Group in HCL
-- Run an `import` to import Azure infrastructure into Terraform State
-- Run a `plan` and `apply` to upodate Azure infrastructure
+- Add an import block to the configuration
+- Run a `plan` and `apply` to update Azure infrastructure
 - Run a `destroy` to remove Azure infrastructure
 
 ### Create the Resource Group
@@ -23,7 +23,7 @@ We are first going to use the Azure portal to create a Resource Group. Take the 
 
 ### Import the Resource Group
 
-We need two values to run the `terraform import` command:
+We need two values for the `import` block:
 
 1. Resource Address for our configuration
 1. Azure Resource ID
@@ -51,56 +51,52 @@ resource "azurerm_resource_group" "my_rg" {
   name = "import-me"
   location = "eastus"
 }
+
+import {
+  id = "ID GOES HERE"
+  to = azurerm_resource_group.my_rg
+}
 ```
 
 and then initialize terraform:
 
-```sh
+```bash
 terraform init
 ```
 
-Now run the import command using the *Resource ID* from the portal:
-
-```sh
-terraform import azurerm_resource_group.my_rg /subscriptions/xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/import-me
-
-Import successful!
-```
-
-You can inspect the resource group that was added into state by using the `state` command.
+Now run the plan command and view the results:
 
 ```bash
-terraform state show azurerm_resource_group.my_rg
+terraform plan
 ```
 
 ```text
-$ terraform state show azurerm_resource_group.my_rg
-# azurerm_resource_group.my_rg:
-resource "azurerm_resource_group" "my_rg" {
-    id       = "/subscriptions/0956ce2e-e325-4642-9071-b8deae2c8ab3/resourceGroups/import-me"
-    location = "eastus"
-    name     = "import-me"
-    tags     = {}
+Terraform will perform the following actions:
 
-    timeouts {}
-}
+  # azurerm_resource_group.my_rg will be imported
+    resource "azurerm_resource_group" "my_rg" {
+        id       = "/subscriptions/16f1299e-c5d6-4d0a-8c74-35852359c75b/resourceGroups/import-me"
+        location = "eastus"
+        name     = "import-me"
+        tags     = {}
+    }
+
+Plan: 1 to import, 0 to add, 0 to change, 0 to destroy.
 ```
 
-### Verify Plan
+If anything is different between the resource in Azure and the resource in the configuration, Terraform will show you the difference as a change.
 
-Run a `terraform plan`.
-You may see see changes if your name or location in the configuration is different from the resource shown in state.  Update the name attribute of the resource group in the `main.tf` to reflect the name of the resource group that was imported if it is different.
+### Apply the Import
 
-```sh
-terraform plan
+Run a `terraform apply`.
+
+```bash
+terraform apply -auto-approve
 ...
-
-No changes. Infrastructure is up-to-date.
-
-This means that Terraform did not detect any differences between your
-configuration and real physical resources that exist. As a result, no
-actions need to be performed.
+Apply complete! Resources: 1 imported, 0 added, 0 changed, 0 destroyed.
 ```
+
+You have successfully imported the resource group into Terraform. You can now remove the `import` block from the configuration.
 
 ### Make a Change
 
@@ -115,7 +111,7 @@ resource "azurerm_resource_group" "my_rg" {
 }
 ```
 
-Run a plan, we should see two changes.
+Run a plan, we should see one change.
 
 ```text
  ~ tags     = {
@@ -133,7 +129,7 @@ SUCCESS! You have now brought existing infrastructure into Terraform.
 
 When you are done, destroy the infrastructure, you no longer need it.
 
-```sh
+```bash
 terraform destroy
 ```
 
@@ -143,5 +139,6 @@ Run a `terraform destroy` and follow the prompts to remove the infrastructure.
 
 ## Resources
 
+- [Import Block](https://developer.hashicorp.com/terraform/language/import)
 - [Terraform Import](https://www.terraform.io/docs/commands/import.html)
 - [Aztfy](https://github.com/Azure/aztfy)
