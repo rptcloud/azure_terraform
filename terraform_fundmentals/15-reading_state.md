@@ -17,17 +17,17 @@ In this step, you'll create a Terraform project on disk that does nothing but em
 
 The project should consist of a single file which can be named something like `primary/main.tf`.
 
-```shell
+```bash
 mkdir -p ~/workstation/terraform/azure/read_state_lab/primary && cd $_
 ```
 
-```shell
+```bash
 touch main.tf
 ```
 
 The contents of `main.tf` are a single output for `public_ip`. This is the entire contents of the file.
 
-```bash
+```hcl
 # primary/main.tf
 output "public_ip" {
   value = "8.8.8.8"
@@ -40,11 +40,11 @@ Generate a state file for the project. Within that project, run `terraform init`
 
 Run the standard `terraform` commands within the `primary` project.
 
-```shell
+```bash
 terraform init
 ```
 
-```shell
+```bash
 terraform apply
 ```
 
@@ -56,17 +56,17 @@ Create a new Terraform configuration that uses a data source to read the configu
 
 Create a second directory named `secondary`.
 
-```shell
+```bash
 mkdir ~/workstation/terraform/azure/read_state_lab/secondary && cd $_
 ```
 
-```shell
+```bash
 touch main.tf
 ```
 
 Define a `terraform_remote_state` data source that uses a `local` backend which points to the primary project.
 
-```bash
+```hcl
 # secondary/main.tf
 # Read state from another Terraform config’s state
 data "terraform_remote_state" "primary" {
@@ -79,7 +79,7 @@ data "terraform_remote_state" "primary" {
 
 Initialize the secondary project with `init`.
 
-```shell
+```bash
 terraform init
 ```
 
@@ -89,7 +89,7 @@ Declare the `public_ip` as an `output`.
 
 Within `/workstation/terraform/azure/read_state_lab/secondary/main.tf`, define an output whose value is the `public_ip` from the data source you just defined.
 
-```bash
+```hcl
 output "primary_public_ip" {
   value = data.terraform_remote_state.primary.outputs.public_ip
 }
@@ -97,11 +97,11 @@ output "primary_public_ip" {
 
 Finally, run `apply`. You should see the IP address you defined in the `primary` configuration.
 
-```shell
+```bash
 terraform apply
 ```
 
-```
+```bash
 Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
 
 Outputs:

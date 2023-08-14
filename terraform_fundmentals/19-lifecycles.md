@@ -180,7 +180,7 @@ resource "azurerm_virtual_machine" "main" {
   # ...
   
   storage_os_disk {
-    name              = "${var.prefix}myvm-osdisk"
+    name              = "${var.prefix}myvm-osdisk-new"
     ...
     
   lifecycle {

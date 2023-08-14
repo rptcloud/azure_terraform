@@ -15,7 +15,12 @@ Build the dashboard using the Azure Virtual Machine Module
 
 Create a new directory for this lab and create a `main.tf` with the following:
 
-- make sure to update ### with your initials
+```bash
+mkdir -p ~/workstation/terraform/azure/templatefile/ && cd $_
+touch main.tf
+```
+
+Add the below configuration to the `main.tf` file. Make sure to update ### with your initials
 
 ```hcl
 provider "azurerm" {
@@ -165,14 +170,14 @@ output "dashboard_url" {
 ```
 Then perform an `init`, `plan`, and `apply`.
 
-## Task 2: Use `templatefile` to render the dasboard layout
+## Task 2: Use `templatefile` to render the dashboard layout
 
 ### Step 2.1: Use `templatefile`
 
 1. Create a `templates` directory in the same directory as your `main.tf`
 2. Create a `dash.tpl` file inside the `templates` directory.
 
-For example: `/terraform/azure/template_lab` which contains:
+For example: `/terraform/azure/templatefile` which contains:
 
 ```bash
 ├ main.tf
@@ -312,7 +317,8 @@ Replace with the following
       sub_id     = data.azurerm_subscription.current.subscription_id
   })
 ```
-Initialize the configuration with a `terraform init` followed by a `plan` and `apply`.
+
+Run a `terraform plan` and `terraform apply` to see the changes.
 
 ### Step 2.3: Destroy
 

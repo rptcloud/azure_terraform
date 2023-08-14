@@ -13,7 +13,7 @@ You'll setup a new project using Terraform Cloud as your backed and use a second
 
 1. Navigate to [the sign up page](https://app.terraform.io/signup) and create an account for Terraform Cloud and an organization called `###-tfc-demo-2023` where `###` is your initials. If you already have an account, just create the organization.
 
-1. Perform a `terraform login` from your workstation
+1. Perform a `terraform login` from your lab environment.
 
 ```bash
 Terraform will request an API token for app.terraform.io using your browser.
@@ -142,9 +142,9 @@ Congratulations! You're now storing state remotely. With Terraform Cloud you are
 
 Back in the Terraform Cloud UI you'll be able to:
 
-* View all your organization's workspaces
-* Lock a workspace, making it easy to avoid conflicting changes and state corruption
-* View state history
+- View all your organization's workspaces
+- Lock a workspace, making it easy to avoid conflicting changes and state corruption
+- View state history
 
 ## Task 3: Create another Terraform config that reads from the state on Terraform Cloud
 
