@@ -22,8 +22,7 @@ Add a list of allowed VM Sizes:
 
 ```hcl
 allowed_sizes = [
-  "Standard_A1",
-  "Standard_A2",
+  "Standard_A2_v2",
   "Standard_D1_v2",
   "Standard_D2_v2",
 ]
