@@ -5,13 +5,14 @@ Duration: 10 minutes
 - Task 1: Create an Azure Virtual Machine using underlying network infrastructure.
 
 ## Task 1: Azure virtual machine
-# When cutting/pasting to create or update your tf file, but sure to replace "###" with your initials
 
-### 1. With an underlying network infrastructure, we can begin to build our virtual machine that will host our webapp.
+*When cutting/pasting to create or update your tf file, but sure to replace "###" with your initials*
 
-Append the following into your `main.tf`
+### 1. With an underlying network infrastructure, we can begin to build our virtual machine that will host our webapp
 
-```
+Create a new file called `vm.tf` and add the following code to it:
+
+```terraform
 resource "azurerm_virtual_machine" "training" {
   name                  = "###vm"
   location              = azurerm_resource_group.training.location
@@ -53,4 +54,5 @@ resource "azurerm_virtual_machine" "training" {
 ```
 
 ### 2. Run `terraform plan` to view the resources that will be created
+
 ### 3. Run `terraform apply` to create the resources specified

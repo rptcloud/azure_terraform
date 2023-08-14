@@ -5,14 +5,22 @@ Duration: 10 minutes
 You'll receive login information for your workstation from the instructor. This lab is to verify you can connect to that workstation and can make changes to the base Terraform configuration there.
 
 - Task 1: Create a basic Terraform configuration for an Azure resource group
-- Task 3: Initialize & apply the configuration
-- Task 4: Change and re-apply the configuration
-
+- Task 2: Initialize & apply the configuration
+- Task 3: Change and re-apply the configuration
 
 ## Task 1: Create a basic Terraform configuration for an Azure resource group using your workstation and initials as the resource group name
 
-Create a `main.tf` inside the azure working directory and paste the Terraform configuration for an Azure resource group.  Replace the prefix with with your intials.
+Create a directory named `azure` in your home directory.  This is where you will create your Terraform configuration files.
+
+```bash
+mkdir azure
 ```
+
+Create a `main.tf` inside the azure working directory and paste the Terraform configuration for an Azure resource group.  You will need to open the azure directory in the code editor first. It should be at the path `/root/workstation/terraform/azure` in Instruqt.
+
+Replace the `<initials>` placeholder with with your initials.
+
+```hcl
 provider "azurerm" {
   features {}
 }
@@ -25,21 +33,21 @@ resource "azurerm_resource_group" "training" {
 
 Turn on auto-save within VS Code if it isn't already enabled.
 
-
 ## Task 2: Initialize and apply your configuration
 
-### 1. Run `terraform init` to download the required providers
-### 2. Run `terraform plan` to view the resources that will be created
-### 3. Run `terraform apply` to create the resources specified
+From the terminal, run the following commands:
 
+1. Run `terraform init` to download the required providers
+2. Run `terraform plan` to view the resources that will be created
+3. Run `terraform apply` to create the resources specified
 
 ## Task 3: Edit your Terraform configuration and re-apply
 
-### 1. Edit the main.tf file and add the underlying network infrastructure.
+### 1. Edit the main.tf file and add the underlying network infrastructure
 
 Replace the ### with your initials.
 
-```
+```hcl
 resource "azurerm_virtual_network" "training" {
   name                = "azureuser###vn"
   address_space       = ["10.0.0.0/16"]
@@ -77,4 +85,5 @@ resource "azurerm_network_interface" "training" {
   }
 }
 ```
+
 ### 2. Run `terraform apply` and notice what resources are modified

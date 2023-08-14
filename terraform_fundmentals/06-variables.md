@@ -1,6 +1,6 @@
-# Lab: Variables
+# Lab: Variables and Locals
 
-Duration: 10 minutes
+Duration: 15 minutes
 
 We don't want to hard code all of our values into the main.tf file. We can use a variable file for easier use.
 
@@ -8,17 +8,25 @@ We don't want to hard code all of our values into the main.tf file. We can use a
 - Task 2: Interpolate those variables
 - Task 3: Create a variables.tf file
 - Task 4: Create a terraform.tfvars file
+- Task 5: Create a locals block with common tags
 
-### Create a variable declaration with your main.tf file
+## Create a variable declaration within a variables.tf file
 
 ### Task 1
+
+Create a `variables.tf` file and place the following variable into the file:
+
 ```hcl
 variable "location" {
+  type = string
+  description = "The Azure Region in which all resources in this example should be created. Defaults to East US."
   default = "East US"
 }
 ```
 
 ### Task 2
+
+Update your resource group to use the newly created variable.
 
 ```hcl
 resource "azurerm_resource_group" "training" {
@@ -26,33 +34,53 @@ resource "azurerm_resource_group" "training" {
   location = var.location
 }
 ```
+
 Run a `terraform plan` and validate that there are no changes.
 
 ```text
 ------------------------------------------------------------------------
 
-No changes. Infrastructure is up-to-date.
+No changes. Your infrastructure matches the configuration.
 
-This means that Terraform did not detect any differences between your
-configuration and real physical resources that exist. As a result, no
-actions need to be performed.
+Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
 ```
 
-## Task 3: Create a variables.tf file
+## Task 3: Add more input variables
 
-Create a `variables.tf` file and place the following variables into the file.  Move the `location` variable out of `main.tf` and into `variables.tf`
+Add the following variables to your variables.tf file:
 
 ```hcl
-variable "resource_group_name" {}
-variable "EnvironmentTag" {}
-variable "prefix" {}
-variable "location" {
-  default = "East US"
+variable "resource_group_name" {
+  type = string
+  description = "The name of the resource group in which all resources in this example should be created."
 }
-variable computer_name {}
-variable admin_username {}
-variable admin_password {}
+
+variable "EnvironmentTag" {
+  type = string
+  description = "The environment tag for all resources in this example."
+}
+
+variable "prefix" {
+  type = string
+  description = "The prefix which should be used for all resources in this example. Set to your initials."
+}
+
+variable computer_name {
+  type = string
+  description = "The name of the virtual machine."
+}
+
+variable admin_username {
+  type = string
+  description = "The username of the virtual machine."
+}
+
+variable admin_password {
+  type = string
+  description = "The password of the virtual machine."
+}
 ```
+
 ## Task 3: Create a terraform.tfvars file to specify the variable values
 
 Create a `terraform.tfvars` file to specify the values for the declared variables above.
@@ -67,19 +95,20 @@ admin_username = "testadmin"
 admin_password = "Password1234!"
 ```
 
-## Task 4: Refactor your main.tf file to accept these variables
+## Task 4: Refactor your configuration files to accept these variables
+
+Update the `main.tf` file to use the variables.
 
 ```hcl
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_resource_group" "training" {
   name     = var.resource_group_name
   location = var.location
 }
+```
 
-...
+Update the vm.tf file to use the variables.
+
+```hcl
 
 resource "azurerm_virtual_machine" "training" {
   name                  = "${var.prefix}vm"
@@ -125,9 +154,32 @@ Run a `terraform plan` and validate that there are no changes.
 ```text
 ------------------------------------------------------------------------
 
-No changes. Infrastructure is up-to-date.
+No changes. Your infrastructure matches the configuration.
 
-This means that Terraform did not detect any differences between your
-configuration and real physical resources that exist. As a result, no
-actions need to be performed.
+Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
 ```
+
+## Task 5: Create a locals block with common tags
+
+Create a `locals.tf` file and place the following code into the file:
+
+```hcl
+locals {
+  common_tags = {
+    environment = var.EnvironmentTag
+    service_name = "Automation"
+    owner        = "Cloud Team"
+    createdby    = "terraform"
+  }
+}
+```
+
+Update the `vm.tf` file to use the locals.
+
+```hcl
+
+  tags = local.common_tags
+
+```
+
+Run a `terraform apply` to update the tags on the virtual machine.

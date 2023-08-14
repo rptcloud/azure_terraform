@@ -20,7 +20,7 @@ touch datasource/virtual_network/{main,terraform}.tf
 
 Populate the files for the virtual network:
 
-`terraform.tf`
+`virtual_network/terraform.tf`
 
 ```terraform
 terraform {
@@ -37,7 +37,7 @@ provider "azurerm" {
 }
 ```
 
-`main.tf`
+`virtual_network/main.tf`
 
 ```terraform
 resource "azurerm_resource_group" "data_source" {
@@ -75,7 +75,7 @@ cd ../azure_vm
 touch {main,terraform,data}.tf
 ```
 
-Populate the `terraform.tf` file:
+Populate the `azure_vm/terraform.tf` file:
 
 ```terraform
 terraform {
@@ -92,7 +92,7 @@ provider "azurerm" {
 }
 ```
 
-Populate the `data.tf` file:
+Populate the `azure_vm/data.tf` file:
 
 ```terraform
 data "azurerm_subnet" "web_subnet" {
@@ -115,7 +115,7 @@ terraform apply
 
 ## Task 3: Use the data source for an Azure VM
 
-Populate the `main.tf` file:
+Populate the `azure_vm/main.tf` file:
 
 ```terraform
 resource "azurerm_network_interface" "web" {

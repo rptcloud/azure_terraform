@@ -9,7 +9,7 @@ You can store your variable values in a Terraform Cloud workspace. In this lab w
 Create the directory for the Terraform config:
 
 ```bash
-mkdir tfc-secure-variables && cd tfc-secure-variables
+mkdir -p ~/workstation/terraform/azure/tfc-secure-variables && cd $_
 touch {terraform,main}.tf
 ```
 
@@ -28,7 +28,7 @@ terraform {
     }
   }
 
-  backend "remote" {
+  cloud {
       organization = "YOUR_ORGANIZATION_NAME"
 
       workspaces {
@@ -78,7 +78,7 @@ resource "azurerm_subnet" "training" {
 
 ## Task 2: Login to TFC and initialize the configuration
 
-Log into your TFC account:
+Log into your TFC account (this is only necessary once per sandbox, you can skip this step if you've already logged into Terraform Cloud):
 
 ```bash
 terraform login
@@ -110,7 +110,7 @@ Kick off a run from the CLI:
 terraform plan
 ```
 
-Observe that this is a speculative plan.
+Observe that this is a speculative plan. If you receive a variable or cloud authentication error, you may have mistyped the variable name or value, or you may have selected the wrong variable type.
 
 Kick off an apply from the CLI:
 
