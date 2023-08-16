@@ -1,24 +1,43 @@
 # Lab: Variable Validation and Suppression
 
+Duration: 15 minutes
+
 We may want to validate and possibly suppress any sensitive information defined within our variables.
 
 - Task 1: Validate variables in Terraform Configuration
 - Task 2: Suppress sensitive information
 - Task 3: View the Terraform state file
 
-## Task 1: Valdiate variables in Terraform Configuration
+## Task 1: Validate variables in Terraform Configuration
 
 ### Create the base Terraform Configuration
 
-Change directory into a folder specific to this challenge.
+Create the necessary folders and files for the configuration
 
-For example: `cd /workstation/terraform/azure/variable-validation/`.
+```bash
+mkdir -p ~/workstation/terraform/variable-validation && cd $_
+touch {terraform,main,variables}.tf
+touch terraform.tfvars
+```
 
 We will start with a few of the basic resources needed.
 
+Add the following to the `terraform.tf` file:
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+  }
+}
+```
+
 ### Create Variables
 
-Create a file `variables.tf` and add the following configuration:
+In `variables.tf` add the following configuration:
 
 ```hcl
 variable "resource_group_name" {}
@@ -136,7 +155,7 @@ resource "azurerm_virtual_machine" "training" {
 }
 ```
 
-### Create Variables TFVARS File
+### Update the Variables TFVARS File
 
 Create a file `terraform.tfvars` and add the following configuration and change out the ### with your initials.
 
@@ -284,7 +303,7 @@ output "phone_number" {
 terraform validate
 ```
 
-After validation is succesful, apply the configuration.
+After validation is successful, apply the configuration.
 
 ```bash
 terraform apply

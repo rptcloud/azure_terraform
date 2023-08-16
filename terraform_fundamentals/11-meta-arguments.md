@@ -52,7 +52,7 @@ resource "azurerm_network_interface" "training" {
   ip_configuration {
     name                          = "azureuser${var.prefix}ip"
     subnet_id                     = azurerm_subnet.training.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     #private_ip_address            = "10.0.2.5"
     public_ip_address_id          = azurerm_public_ip.training[count.index].id
   }

@@ -122,6 +122,13 @@ Check out all your workspaces!
 terraform workspace list
 ```
 
+You can also view all the state files in the `terraform.tfstate.d` directory:
+
+```bash
+ls -l terraform.tfstate.d/
+ls -l terraform.tfstate.d/development/
+```
+
 ## Task 5: Destroy and delete the staging workspace
 
 Try to delete the staging workspace:

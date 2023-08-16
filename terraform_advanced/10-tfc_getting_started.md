@@ -78,7 +78,8 @@ Retrieved token for user tfcuser
 
 We will utilize a sample code repo to get started with Terraform Cloud. You can clone this sample repo using the following conmmands:
 
-```sh
+```bash
+cd ~/workstation/terraform/
 git clone https://github.com/hashicorp/tfc-getting-started.git
 cd tfc-getting-started
 ```
@@ -87,7 +88,11 @@ cd tfc-getting-started
 
 This startup script within the sample code repo automatically handles all the setup required to start using Terraform with Terraform Cloud. The included configuration provisions some mock infrastructure to a fictitious cloud provider called "Fake Web Services" using the [`fakewebservices`](https://registry.terraform.io/providers/hashicorp/fakewebservices/latest) provider.
 
-```
+```bash
+# The script requires jq to run
+apt install jq -y
+
+# Now run the setup script
 ./scripts/setup.sh
 ```
 
@@ -110,13 +115,11 @@ First, we'll do some setup and configure Terraform to use Terraform Cloud.
 Press any key to continue (ctrl-c to quit):
 ```
 
-```
 You did it! You just provisioned infrastructure with Terraform Cloud! The organization we created here has a 30-day free trial of the Team & Governance tier features.
-```
 
 We will use this TFC organization for the remainder of class.
 
-Navigate to your workspace, along with mock infrastruture that you just deployed:
+Navigate to your workspace, along with mock infrastructure that you just deployed:
 
 - Terraform Cloud: https://app.terraform.io/
 
