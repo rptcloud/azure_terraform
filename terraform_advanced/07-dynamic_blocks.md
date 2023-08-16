@@ -104,3 +104,7 @@ Take a look at the properties of the network security group to validate all the 
 ```bash
 terraform state show azurerm_network_security_group.nsg
 ```
+
+## Bonus Task
+
+How could you handle rules that have different properties defined? Could you use a default value if none is defined by the local value? *Hint: the [lookup](https://www.terraform.io/docs/language/functions/lookup.html) function may be helpful.*

@@ -218,3 +218,5 @@ Now we can run `terraform plan` and it will execute successfully.
 ```bash
 terraform plan
 ```
+
+You do not need to actually deploy the configuration, unless you really want to.

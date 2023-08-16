@@ -9,19 +9,31 @@ This lab demonstrates the use of the `null_resource`. Instances of `null_resourc
 
 We'll demonstrate how `null_resource` can be used to take action on a set of existing resources that are specified within the `triggers` argument
 
-
 ## Task 1: Create a Azure Virtual Machine using Terraform
 
 ### Step 1.1: Create Server instances
 
-Build the web servers using the Azure Virtual Machine:
+Build the web servers using the Azure Virtual Machine resource:
 
 Create the folder structure:
 
 ```bash
 mkdir ~/workstation/terraform/null_resource && cd $_
-touch {variables,main}.tf
+touch {variables,main,terraform}.tf
 touch terraform.tfvars
+```
+
+Add the following to the `terraform.tf` file:
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+  }
+}
 ```
 
 Update your `main.tf` with the following:
@@ -135,7 +147,7 @@ variable "num_vms" {
 Update or your `terraform.tfvars` with the following and replace the `###` with your initials:
 
 ```hcl
-resource_group_name = "###-resourcegroup"
+resource_group_name = "###-nullrg"
 EnvironmentTag = "staging"
 prefix = "###"
 location = "East US"
@@ -151,7 +163,7 @@ Then perform an `init`, `plan`, and `apply`.
 
 ### Step 2.1: Use `null_resource`
 
-Add `null_resource` stanza to the `main.tf`.  Notice that the trigger for this resource is set to monitor changes to the number of virtual machines.
+Add the `null_resource` block to the `main.tf`.  Notice that the trigger for this resource is set to monitor changes to the number of virtual machines.
 
 ```hcl
 resource "null_resource" "web_cluster" {
@@ -173,22 +185,31 @@ resource "null_resource" "web_cluster" {
 }
 ```
 
-Initialize the configuration with a `terraform init` followed by a `plan` and `apply`.
+The `null_resource` uses the `null` provider, so you need to initialize the configuration to download the `null` provider plugin. Then run a `terraform apply`.
 
-### Step 2.2: Re-run `plan` and `apply` to trigger `null_resource`
-
-After the infrastructure has completed its buildout, change your machine count (in your terraform.tfvars) and re-run a plan and apply and notice that the null resource is triggered.  This is because the `web_cluster_size` changed, triggering our null_resource.
-
-```shell
+```bash
+terraform init
 terraform apply
 ```
 
-Run `apply` a few times to see the `null_resource`.
+### Step 2.2: Re-run `plan` and `apply` to trigger `null_resource`
+
+After the infrastructure has completed its buildout, change your machine count (`num_vms` in your terraform.tfvars) and re-run a plan and apply and notice that the null resource is triggered.  This is because the `web_cluster_size` changed, triggering our null_resource.
+
+```bash
+terraform apply
+```
+
+If you run `terraform plan` again, the `null_resource` will not be triggered because the `web_cluster_size` value has not changed.
 
 ### Step 2.3: Destroy
 
 Finally, run `destroy`.
 
-```shell
+```bash
 terraform destroy
 ```
+
+## Bonus Task
+
+The `null_resource` is being deprecated in favor of the built-in `terraform_data` resource. Refactor the configuration to use the `terraform_data` resource instead of the `null_resource`.

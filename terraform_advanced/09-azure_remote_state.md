@@ -1,3 +1,5 @@
+# Lab: Azure Remote State
+
 ## Description
 
 In this challenge you will use create an Azure storage account for remote state storage and then update a configuration to use that storage account.
@@ -17,12 +19,14 @@ You will use Terraform to create the Azure storage account, a container in the s
 Create the folder structure for the storage account and main configuration:
 
 ```bash
-mkdir -p ~/workstation/terraform/azure_remote_state/{storage_account,main}
+mkdir -p ~/workstation/terraform/azure_remote_state/{storage_account,vnet}
 touch ~/workstation/terraform/azure_remote_state/storage_account/{terraform,main}.tf
-touch ~/workstation/terraform/azure_remote_state/main/{terraform,main}.tf
+touch ~/workstation/terraform/azure_remote_state/vnet/{terraform,main}.tf
 touch ~/workstation/terraform/azure_remote_state/storage_account/terraform.tfvars
 cd ~/workstation/terraform/azure_remote_state/storage_account
 ```
+
+First you need to deploy the storage account.
 
 Add the following to the `terraform.tf` file in the `storage_account` directory:
 
@@ -171,7 +175,7 @@ terraform apply
 
 ## Task 2: Deploy the configuration using the `local` backend
 
-In the `main` directory add the following to the `terraform.tf` directory:
+In the `vnet` directory add the following to the `terraform.tf` directory:
 
 ```hcl
 terraform {
@@ -217,8 +221,9 @@ resource "azurerm_virtual_network" "remote_state" {
 At first you are going to use the `local` backend, so the `azurerm` backend is commented out. You'll remove those comments in a moment. For now, initialize and apply the configuration:
 
 ```bash
+cd ../vnet/
 terraform init
-terrform apply
+terraform apply
 ```
 
 ## Task 3: Update the configuration with the `azurerm` backend and migrate your state data
@@ -232,6 +237,18 @@ You are going to migrate your existing state data to the Azure storage account c
 ```
 
 You are changing the backend for state data, so Terraform must be initialized with the new values. The `backend` block is a partial configuration. The rest of the configuration will be specified as part of the `terraform init` command. You will need that `init_string` output now to run the command.
+
+```bash
+terraform -chdir="../storage_account" output init_string
+```
+
+Do not copy the `<<EOT` and `EOT` lines. Only copy the string between them. It should look something like this:
+
+```bash
+-backend-config=storage_account_name=eco98775 -backend-config=container_name=terraform-state -backend-config=sas_token="?sv=2017-07-29&ss=b&srt=sco&sp=rwdlac&se=2022-08-16T15:51:29Z&st=2022-05-18T15:51:29Z&spr=https&sig=45%2B3sGaBL%2F6Pw4YEDQG70kbKu%2FDojFlWILlyqz43mQA%3D"
+```
+
+Copy the string and paste it into the `terraform init` command.
 
 ```bash
 terraform init PASTE_THE_STRING_HERE
@@ -256,4 +273,36 @@ Successfully configured the backend "azurerm"! Terraform will automatically
 use this backend unless the backend configuration changes.
 ```
 
+The local `terraform.tfstate` is now empty:
+
+```bash
+cat terraform.tfstate
+```
+
 You can now delete the local `terraform.tfstate` file and run a `terraform plan` to confirm the state data migration was successful.
+
+The new backend configuration is held in the `.terraform/terraform.tfstate` file. You can view the contents of that file to see the new configuration:
+
+```bash
+cat .terraform/terraform.tfstate
+```
+
+```bash
+{
+    "version": 3,
+    "serial": 1,
+    "lineage": "b803be3b-bf51-0f78-858c-bd4b0e7b928d",
+    "backend": {
+        "type": "azurerm",
+        "config": {
+            "access_key": null,
+            "client_certificate_password": null,
+            "client_certificate_path": null,
+            "client_id": null,
+            "client_secret": null,
+            "container_name": "terraform-state",
+            "endpoint": null,
+            "environment": null,
+            "key": "terraform.tfstate",
+...
+```

@@ -6,12 +6,12 @@ So far, we've already used arguments to configure your resources. These argument
 
 The count argument does however have a few limitations in that it is entirely dependent on the count index which can be shown by performing a `terraform state list`.
 
-A more mature approach to create multiple instances while keeping code DRY is to leverage Terraform's `for-each`.
+A more mature approach to create multiple instances while keeping code DRY is to leverage Terraform's `for_each`.
 
 - Task 1: Change the number of VM instances with `count`
 - Task 2: Look at the number of VM instances with `terraform state list`
 - Task 3: Decrease the Count and determine which instance will be destroyed.
-- Task 4: Refactor code to use Terraform `for-each`
+- Task 4: Refactor code to use Terraform `for_each`
 - Task 5: Look at the number of VM instances with `terraform state list`
 - Task 6: Update the output variables to pull IP and DNS addresses.
 - Task 7: Update the server variables to determine which instance will be destroyed.
@@ -39,7 +39,7 @@ terraform {
 }
 ```
 
-Update the root `main.tf` to utilize the `count` parameter on the VM resource.  Notice the count has been variablized to specify the number of VMs.
+Populate the root `main.tf` utilizing the `count` parameter on the VM resource.  Notice the count has been variablized to specify the number of VMs.
 
 `main.tf`
 
@@ -143,7 +143,6 @@ output "public_dns" {
 `variables.tf`
 ```hcl
 variable "prefix" {
-  default     = "<initials>"
   type        = string
   description = "Prefix to append to resources"
 }
@@ -196,29 +195,23 @@ terraform state list
 ```bash
 azurerm_network_interface.training[0]
 azurerm_network_interface.training[1]
-
+...
 azurerm_public_ip.training[0]
 azurerm_public_ip.training[1]
-
-
+...
 azurerm_virtual_machine.training[0]
 azurerm_virtual_machine.training[1]
-
 ```
 
-Notice the way resources are indexed when using meta-arguments.
+Notice the way resources are indexed when using the `count` meta-argument.
 
 ## Task 3: Decrease the Count and determine which instance will be destroyed
 
 Update the count from `2` to `1` by changing the `num_vms` variable in your `terraform.tfvars` file.
 
-Replace the `###` with your initials.
-
+`terraform.tfvars`
 ```hcl
-prefix         = "###"
-location       = "East US"
-admin_username = "testadmin"
-admin_password = "Password1234!"
+...
 num_vms        = 1
 ```
 
@@ -228,9 +221,11 @@ Run a `terraform apply` followed by a `terraform state list` to view how the ser
 terraform apply
 ```
 
-```
+```bash
 terraform state list
+``````
 
+```bash
 azurerm_network_interface.training[0]
 azurerm_public_ip.training[0]
 azurerm_resource_group.training
@@ -241,9 +236,9 @@ azurerm_virtual_network.training
 
 You will see that when using the `count` parameter you have very limited control as to which server Terraform will destroy. It will always default to destroying the server with the highest index count.
 
-## Task 4: Refactor code to use Terraform `for-each`
+## Task 4: Refactor code to use Terraform `for_each`
 
-Refactor `main.tf` to make use of the `for-each` command rather then the count command. Replace the following in the `main.tf` and comment out the `output` blocks for now.
+Refactor `main.tf` to make use of the `for_each` meta-argument rather then the count command. Replace the contents in the `main.tf` with the following, and comment out the `output` blocks in `outputs.tf` for now.
 
 ```hcl
 locals {
@@ -355,13 +350,21 @@ resource "azurerm_virtual_machine" "training" {
 }
 ```
 
-If you run `terraform apply` now, you'll notice that this code will destroy the previous resource and create two new servers based on the attributes defined inside the `servers` variable, which is defined as a map of our servers.
+Run `terraform apply` now.
+
+```bash
+terraform apply
+```
+
+You'll notice that this code will destroy the previous resource and create two new servers based on the attributes defined inside the `servers` local value, which is defined as a map of our servers.
 
 ### Task 5: Look at the number of VM instances with `terraform state list`
 
 ```bash
 terraform state list
+```
 
+```bash
 azurerm_network_interface.training["server-ubuntu-16"]
 azurerm_network_interface.training["server-ubuntu-18"]
 azurerm_public_ip.training["server-ubuntu-16"]
@@ -373,11 +376,11 @@ azurerm_virtual_machine.training["server-ubuntu-18"]
 azurerm_virtual_network.training
 ```
 
-Since we used _for-each_ to the azurerm_virtual_machine.training resource, it now refers to multiple resources with key references from the `servers` variable.
+Since we used `for_each` to create the azurerm_virtual_machine.training resource, it now refers to multiple resources with key references from the `servers` variable.
 
-### Task 6: Update the output variables to pull IP and DNS addresses.
+### Task 6: Update the output variables to pull IP and DNS addresses
 
-When using Terraform's `for-each` our output blocks need to be updated to utilize `for` to loop through the server names. This differs from using `count` which utilized the Terraform splat operator `*`. Uncomment and update the output block of your `main.tf`.
+When using Terraform's `for_each` our output blocks need to be updated to utilize `for` expressions to loop through the server names. This differs from using `count` which utilized the Terraform splat operator `*`. Update the output block of your `outputs.tf`.
 
 ```hcl
 output "public_dns" {
@@ -388,7 +391,7 @@ output "public_dns" {
 
 Format, validate and apply your configuration to now see the format of the Outputs.
 
-```
+```bash
 terraform fmt
 terraform validate
 terraform apply
@@ -401,18 +404,20 @@ public_dns = {
 }
 ```
 
-## Task 7: Update the server variables to determine which instance will be destroyed.
+## Task 7: Update the server variables to determine which instance will be destroyed
 
-Update the `servers` local variable to remove the `server-ubuntu-16` instance by removing the following block:
+Update the `servers` local value to the following, removing the `server-ubuntu-16` key and its values:
 
 ```hcl
-    server-ubuntu-16 = {
-      identity  = "${var.prefix}-ubuntu-16"
+  servers = {
+    server-ubuntu-18 = {
+      identity  = "${var.prefix}-ubuntu-18"
       publisher = "Canonical"
       offer     = "UbuntuServer"
-      sku       = "16.04-LTS"
+      sku       = "18.04-LTS"
       version   = "latest"
     },
+  }
 ```
 
-If you run `terraform apply` now, you'll notice that this code will destroy the `server-ubuntu-16`, allowing us to target a specific instance that needs to be updated/removed.
+If you run `terraform plan` now, you'll notice that this code will destroy the `server-ubuntu-16`, allowing us to target a specific instance that needs to be updated/removed.
