@@ -107,7 +107,6 @@ You can now use the network module in your root module. First create the files f
 ```bash
 cd ..
 touch {main,terraform}.tf
-touch terraform.tfvars
 ```
 
 Add the following to the `terraform.tf` file:

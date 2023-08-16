@@ -18,15 +18,28 @@ A more mature approach to create multiple instances while keeping code DRY is to
 
 ## Task 1: Change the number of VM instances with `count`
 
-Change directory into a folder specific to this challenge.
+Create the necessary folders and files for the configuration
 
-For example: `cd /workstation/terraform/azure/for_each/`.
+```bash
+mkdir -p ~/workstation/terraform/azure/for_each && cd $_
+touch {terraform,main,variables,outputs}.tf
+touch terraform.tfvars
+```
 
-We will start with a few of the basic resources needed.
+Add the following to the `terraform.tf` file:
 
-Create a `variables.tf`, `main.tf`, `outputs.tf` and `terraform.tfvars` files to hold our configuration.
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+  }
+}
+```
 
-Update the root `main.tf` to utilize the `count` paramater on the VM resource.  Notice the count has been variablized to specify the number of VMs.
+Update the root `main.tf` to utilize the `count` parameter on the VM resource.  Notice the count has been variablized to specify the number of VMs.
 
 `main.tf`
 
@@ -36,7 +49,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "training" {
-  name     = "${var.prefix}-resourcegroup"
+  name     = "${var.prefix}-foreach"
   location = var.location
 }
 
@@ -167,11 +180,20 @@ admin_password = "Password1234!"
 num_vms        = 2
 ```
 
+Now deploy the configuration:
+
+```bash
+terraform init
+terraform apply
+```
+
 ## Task 2: Look at the number of servers with `terraform state list`
 
 ```bash
 terraform state list
+```
 
+```bash
 azurerm_network_interface.training[0]
 azurerm_network_interface.training[1]
 
@@ -186,7 +208,7 @@ azurerm_virtual_machine.training[1]
 
 Notice the way resources are indexed when using meta-arguments.
 
-## Task 3: Decrease the Count and determine which instance will be destroyed.
+## Task 3: Decrease the Count and determine which instance will be destroyed
 
 Update the count from `2` to `1` by changing the `num_vms` variable in your `terraform.tfvars` file.
 
