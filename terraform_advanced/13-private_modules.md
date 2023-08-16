@@ -8,26 +8,19 @@ In this challenge you will register some modules with your Private Module Regist
 
 ### Fork the Module Repositories
 
-You are going to fork the following repositories into your own GitHub account:
+You are going to fork this repository into your GitHub account.
 
-- https://github.com/azure-terraform-workshop/terraform-azurerm-networking.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-webserver.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-appserver.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-dataserver.git
+- https://github.com/ned1313/terraform-azurerm-networking
 
-Each of these repositories represents a module that can be developed and versioned independently.
+The repository represents a module that can be developed and versioned independently.
 
 ### Add Modules
 
-We need to add these repositories into the Private Module Registry.
+We need to add the repository into the Private Module Registry.
 
-Navigate back to Terraform Cloud and click the "Modules" menu at the top of the page. From there click the "+ Add Module" button.
-
-![](img/tfe-add-module.png)
+Navigate back to Terraform Cloud, go into Registry, and click the "Publish" menu and select "Module".
 
 Select the networking repository you forked earlier.
-
-![](img/tfe-select-module-repo.png)
 
 > Note: You will see your github user name instead of 'azure-terraform-workshop/' since you forked this repo.
 
