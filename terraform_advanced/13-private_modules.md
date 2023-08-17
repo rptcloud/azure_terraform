@@ -8,28 +8,35 @@ In this challenge you will register some modules with your Private Module Regist
 
 ### Fork the Module Repositories
 
-You are going to fork the following repositories into your own GitHub account:
+You are going to fork this repository into your GitHub account.
 
-- https://github.com/azure-terraform-workshop/terraform-azurerm-networking.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-webserver.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-appserver.git
-- https://github.com/azure-terraform-workshop/terraform-azurerm-dataserver.git
+- https://github.com/ned1313/terraform-azurerm-networking
 
-Each of these repositories represents a module that can be developed and versioned independently.
+The repository represents a module that can be developed and versioned independently.
+
+### Create a VCS Connection
+
+In Terraform Cloud, navigate to "Settings" -> "Version Control" and click "Add a VCS Provider".
+
+Select `GitHub.com (custom)` as the VCS connection type.
+
+Follow the directions to create an OAuth Application in GitHub.
+
+Once you're created the application in GitHub, copy the client ID to the Terraform Cloud form. And then generate a client secret and copy that to the Terraform Cloud form.
+
+You can set a Name for the application if you want, but it's not required.
+
+Click on Authorize for Terraform Cloud.
 
 ### Add Modules
 
-We need to add these repositories into the Private Module Registry.
+We need to add the repository into the Private Module Registry.
 
-Navigate back to Terraform Cloud and click the "Modules" menu at the top of the page. From there click the "+ Add Module" button.
-
-![](img/tfe-add-module.png)
+In Terraform Cloud, go into Registry, and click the "Publish" menu and select "Module".
 
 Select the networking repository you forked earlier.
 
-![](img/tfe-select-module-repo.png)
-
-> Note: You will see your github user name instead of 'azure-terraform-workshop/' since you forked this repo.
+> Note: You will see your github user name instead of 'ned1313/' since you forked this repo.
 
 Click "Publish Module".
 
@@ -37,15 +44,7 @@ This will query the repository for necessary files and tags used for versioning.
 
 Congrats, you are done!
 
-Ok, not really...
-
-Repeat this step for the other three modules:
-
-- terraform-azurerm-appserver
-- terraform-azurerm-dataserver
-- terraform-azurerm-webserver
-
-### Create a new github repository
+### Create a new github repository to use the module
 
 In github, create a new public repository names "tfc-workspace-modules".
 
@@ -54,8 +53,6 @@ Create a single `main.tf` file with the following contents:
 ```hcl
 variable "name" {}
 variable "location" {}
-variable "username" {}
-variable "password" {}
 
 provider "azurerm" {
   features {}
@@ -71,7 +68,7 @@ variable "subnet_address_prefixes" {
 
 module "networking" {
   source  = "app.terraform.io/YOUR_ORG_NAME/networking/azurerm"
-  version = "0.12.0"
+  version = "~> 1.0"
 
   name                    = var.name
   location                = var.location
@@ -80,7 +77,7 @@ module "networking" {
 }
 ```
 
-Update the source arguments to your organization by replacing "YOUR_ORG_NAME" with your TFC organization name.
+Update the source argument for the networking module to your organization by replacing "YOUR_ORG_NAME" with your TFC organization name.
 
 Commit the file and check the code into github.
 
@@ -88,28 +85,16 @@ Commit the file and check the code into github.
 
 Create a TFC workspace that uses the VCS connection to load this new repository.
 
-![](img/tfe-new-workspace.png)
-
 Select the repository and name the workspace the same thing "tfc-workspace-modules"
-
-![](img/tfe-new-workspace-final.png)
 
 ### Configure Workspace Variables
 
-Navigate back to your "tfc-workspace-modules" workspace.
+Fill out the variables for the workspace based on the following list:
 
 Set the Terraform Variables:
 
 - 'name' - A unique environment name such as `###env`
 - 'location' - An Azure region such as `eastus` or `centralus`
-- 'username' (sensitive) - A username for the VM's
-> Note: this can not be "admin"
-- 'password' (sensitive) - A password for the VM's
-> NOTE: password must be between 6-72 characters long and must satisfy at least 3 of password complexity requirements from the following:
-> 1. Contains an uppercase character
-> 2. Contains a lowercase character
-> 3. Contains a numeric digit
-> 4. Contains a special character
 - 'vnet_address_spacing' (HCL) - The Vnet Address space
     ```hcl
     ["10.0.0.0/16"]
@@ -123,7 +108,17 @@ Set the Terraform Variables:
     ]
     ```
 
-Set Environment Variables for your Azure Service Principal (be sure check the 'sensitive' checkbox to hide these values):
+Click on Save variables.
+
+Do not start a new plan yet, instead click on `Go to workspace overview`.
+
+Set Environment Variables for your Azure Service Principal (be sure check the 'sensitive' checkbox to hide these values).
+
+You can get the current values using the following command from the lab environment:
+
+```bash
+env | grep ARM
+```
 
 - ARM_TENANT_ID
 - ARM_SUBSCRIPTION_ID
@@ -132,9 +127,9 @@ Set Environment Variables for your Azure Service Principal (be sure check the 's
 
 ### Run a Plan
 
-Click the "Queue Plan" button.
+Click the "Actions" button and select "Start new run".
 
-![](img/tfe-queue-plan.png)
+Select a "Plan and apply" run and click "Start run".
 
 Wait for the Plan to complete.
 
@@ -147,54 +142,6 @@ Approve the plan and apply it.
 Watch the apply progress and complete.
 
 Login to the at Azure Portal to see your infrastructure.
-
-### Update a Module
-
-In the `tfc-workspace-modules` repository, navigate to the `main.tf` file.
-
-Add the following to deploy the rest of your application (again, be sure to update the source references):
-
-```hcl
-module "webserver" {
-  source  = "app.terraform.io/YOUR_ORG_NAME/webserver/azurerm"
-  version = "0.12.0"
-
-  name      = var.name
-  location  = var.location
-  subnet_id = module.networking.subnet-ids[0]
-  vm_count  = 1
-  username  = var.username
-  password  = var.password
-}
-
-module "appserver" {
-  source  = "app.terraform.io/YOUR_ORG_NAME/appserver/azurerm"
-  version = "0.12.0"
-
-  name      = var.name
-  location  = var.location
-  subnet_id = module.networking.subnet-ids[1]
-  vm_count  = 1
-  username  = var.username
-  password  = var.password
-}
-
-module "dataserver" {
-  source  = "app.terraform.io/YOUR_ORG_NAME/dataserver/azurerm"
-  version = "0.12.0"
-
-  name      = var.name
-  location  = var.location
-  subnet_id = module.networking.subnet-ids[2]
-  vm_count  = 1
-  username  = var.username
-  password  = var.password
-}
-```
-
-Commit your change and see what the changes show in the plan.
-
-If you are satisfied with the changes, apply the changes.
 
 ## Advanced areas to explore
 

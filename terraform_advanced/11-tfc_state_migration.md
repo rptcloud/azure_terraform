@@ -1,6 +1,6 @@
 # Lab: Migrating State to Terraform Cloud
 
-In this lab you will create and deploy and Azure Virtual Network using Terraform, and then migrate the state data to Terraform Cloud. We will continue to use this configuration in the next lab.
+In this lab you will create and deploy an Azure Virtual Network using Terraform, and then migrate the state data to Terraform Cloud. We will continue to use this configuration in the next lab.
 
 Duration: 10 minutes
 
