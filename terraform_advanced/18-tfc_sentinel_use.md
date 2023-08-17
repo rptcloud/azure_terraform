@@ -8,47 +8,31 @@ In this challenge, you will see how you can apply policies around your Azure sub
 
 ### View Policies
 
-In the Terraform Enterprise web app, click on your organization -> Organization Settings
+In the Terraform Cloud web app, click on your organization -> Settings
 
-<https://app.terraform.io/YOUR_ORG_NAME/settings/policies>
-
-![](img/sentinel-policy-add.png)
+Select the "Policies" section under "Integrations".
 
 ### Create Policy Set
 
-First we need a place to stor our policies, namely a Policy Set.
+First we need a place to store our policies, namely a Policy Set.
 
-On the left menu, click the "Policy set" tab.
+On the left menu, click the "Policy set" section.
 
-Click "Create new policy set"
+Click "Connect a new policy set"
 
-![](img/sentinel-policyset-add-new.png)
+Select "create a policy set with individually managed policies." as you will be adding the individual policies to an empty set.
 
-Create the following policy:
+On the next page, leave the default of "Sentinel" and name the policy set "MyWorkspacePolicies".
 
-![](img/sentinel-policyset-add-new-form.png)
+Leave the default of "Policies enforced globally" so that the policy set applies to all workspaces.
 
-Create the following policy:
-
-__Name:__ MyWorkspacePolicies
-
-__Description:__ Policies I use for user 'INSERT USERNAME'.
-
-__Policy Set Source__: Select Upload Via API
-
-__Scope of Policies:__ Select -> "Policies enforced on selected workspaces"
-
-__Policies:__ Select the Policy created above -> Click "Add"
-
-__Workspaces:__ Select the workspace you created in the `vcs-code-promote` lab ("web-net-prod") -> Click "Add"
+Click on "Connect policy set".
 
 ### Create Policy
 
 Now lets create a Policy to enforce governance.
 
-Click "Create new policy"
-
-![](img/sentinel-policy-add-new.png)
+Click on the "Policies" section of the menu and then on "Create new policy"
 
 Create the following policy:
 
@@ -66,6 +50,7 @@ import "tfplan"
 required_tags = [
   "owner",
   "environment",
+  "costcenter",
 ]
 
 getTags = func(group) {
@@ -89,19 +74,19 @@ main = rule {
 }
 ```
 
-__Policy Sets__: Select the Policy Set we just created "MyWorkspacePolicies".
+__Policy Sets__: Select the Policy Set we just created "MyWorkspacePolicies" and click on "Add policy set".
+
+Click on "Create policy" to complete the policy creation.
 
 ### Manually Run a Plan
 
 > Note: be sure to discard any existing plans.
 
-Navigate to your "ptfe-workspace" and queue a plan.
+Navigate to your "web-net-prod" workspace, change the `prefix` variable value to something different and queue a plan.
 
 ### Review the Plan
 
-Will see the plan was successful but there was a policy failure, however the option to Apply is still available. Why is that?
-
-![](img/sentinel-advisory.png)
+Will see the plan was successful but there was a policy failure. However, since the policy was set to `advisory` the plan can still be applied.
 
 **Discard the plan.**
 
@@ -109,7 +94,11 @@ Will see the plan was successful but there was a policy failure, however the opt
 
 Update the Policy Enforcement to be `hard-mandatory`.
 
-![](img/tfe-policy-hard-mandatory.png)
+In the Terraform Cloud web app, click on your organization -> Settings
+
+Go to the "Policies" section and click on the "ResourceGroupRequireTag" policy.
+
+Change the "Policy Enforcement" to "Hard mandatory" and click on "Update policy".
 
 ### Run a Plan
 
@@ -117,9 +106,7 @@ Queue a plan for the workspace.
 
 ### Review the Plan
 
-This time the the run fails due to the hard enforcement.
-
-![](img/tfe-policy-fail.png)
+This time the the run fails due to the hard enforcement, and you won't be able to apply the plan.
 
 ### Sentinel - Advanced
 
@@ -129,7 +116,7 @@ __Policy Name:__ ResourceGroupRequireTag-Advanced
 
 __Description:__ Policy requiring resource group tags, advanced
 
-__Policy Enforcement:__ hard-mandatory
+__Policy Enforcement:__ Advisory
 
 __Policy Code:__
 
@@ -257,8 +244,6 @@ __Policy Sets__: Select the Policy Set "MyWorkspacePolicies".
 
 We know this will fail due to our first policy, but this advanced policy provides more valuable information to the end user.
 
-![](img/tfe-policy-fail-advanced.png)
-
 ### Update Workspace
 
 Update the workspace `main.tf` to comply with the policy failure. What change is required?
@@ -267,17 +252,18 @@ Save and commit the code to your repository.
 
 ### Run a Plan
 
-Run another plan.
+The code commit should kick off a new plan.
 
 > Note: You may need to discard the last non-applied build.
 
 ### Review the Plan
 
-The plan should succeed and now pass the sentinel policy check.
+The plan should succeed and now pass the sentinel policy checks.
 
 ## Advanced areas to explore
 
 1. Write another Sentinel Policy restricting VM types in Azure.
+2. Check out the policy libraries on the [public registry](https://registry.terraform.io/browse/policies).
 
 ## Resources
 
