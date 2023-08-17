@@ -19,7 +19,8 @@ The only real way to test infrastructure code beyond static analysis is by deplo
 First, ensure you are in the `~/workstation/terraform/` directory on your workstation. Inside of the `~/workstation/terraform/` directory create a `testing_lab` folder add a `main.tf` calling a module that we will be writing and testing.  We will also be deploying a flask application so we need to create a `hello.py` file.
 
 ### Root Module
-```shell
+
+```bash
 mkdir -p ~/workstation/terraform/testing_lab
 touch ~/workstation/terraform/testing_lab/main.tf
 touch ~/workstation/terraform/testing_lab/hello.py
@@ -56,11 +57,9 @@ Application Code
 `hello.py`
 ```python
 from flask import Flask
-import requests
 
 app = Flask(__name__)
 
-import requests
 @app.route('/')
 def hello_world():
     return """<!DOCTYPE html>
@@ -78,14 +77,14 @@ def hello_world():
 
 Create a Module for building a Linux VM with a Flask Application that will be the source of our unit tests.
 
-```shell
+```bash
 mkdir -p ~/workstation/terraform/testing_lab/modules/my_linux_vm
 touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/{linux,variables,outputs,terraform}.tf
 ```
 
 The structure for this module testing will look similar to the following file layout:
 
-```sh
+```bash
 testing_lab
 ├── main.tf
 ├── hello.py
@@ -99,6 +98,19 @@ testing_lab
 ```
 
 Insided the `my_linux_vm` directory update the terraform configuration files as follows:
+
+`terraform.tf`
+
+```terraform
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+  }
+}
+```
 
 `linux.tf`
 ```terraform
@@ -305,12 +317,15 @@ output "public_dns" {
 
 ## Task 2: Write a unit test for your Terraform module
 
-Install Go on your training workstation
+Install the common build tools and Go on your training workstation
 
 ```bash
+apt install build-essential -y
 wget -c https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
 export PATH=$PATH:/usr/local/go/bin
 ```
+
+Confirm that `go` is installed.
 
 ```bash
 go version
@@ -318,7 +333,7 @@ go version
 
 Create a new folder within the `~/workstation/terraform/testing_lab/modules/my_linux_vm` folder called `test`. This will house your test for the server module.
 
-```shell
+```bash
 mkdir -p ~/workstation/terraform/testing_lab/modules/my_linux_vm/test
 touch ~/workstation/terraform/testing_lab/modules/my_linux_vm/test/server_test.go
 ```
@@ -385,7 +400,7 @@ func TestEnvironment(t *testing.T) {
 
 At the end of this task you should have a file layout similar to the following:
 
-```shell
+```bash
 testing_lab
 ├── main.tf
 ├── hello.py
@@ -399,6 +414,7 @@ testing_lab
 ```
 
 ## Task 3:  Use Terratest to Deploy infrastructure
+
 We will use Terratest to execute terraform to deploy our infrastructure into AWS.
 
 ```bash
@@ -408,6 +424,7 @@ go mod init "${test_file%.*}"
 go mod tidy
 go test -v $test_file
 ```
+
 **Note: Go tests have a default timeout of 10 minutes. If your infrastructure takes longer than 10 minutes to create, you may want to add the optional `-timeout` flag when running your go test. For a timeout of 30 minutes, you would do: `go test -v -timeout 30m $test_file`**
 
 If working correctly, the test should output something along the lines of:
@@ -420,7 +437,6 @@ PASS
 ok      command-line-arguments  133.336s
 ```
 
-
 ## Task 4: Validate infrastructure with Terratest
 
 Terratest allows us to validate that the infrastructure works correctly in that environment by making HTTP requests, API calls, SSH connections, etc.
@@ -432,6 +448,7 @@ While Terratest has many built-in functions, you can also use other Go packages 
 Finally, you can have your test fail if something is not as it should be. With the "assert" package in Go, you can ensure your outputs are as expected, causing the test to fail if they are not.
 
 ## Task 5: Undeploy
+
 The final step of our test is to undeploy everything at the end. Terratest allows us to perform a terraform destroy at the end of the testing cycle. Take a look inside of your `server_test.go` file. You should be able to find the following lines:
 
 ```go

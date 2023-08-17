@@ -2,7 +2,7 @@
 
 Terraform Cloud includes Teams and permissions that are set at the organization and workspace level. In this challenge, you will create teams in your TFC organization, add users, and assign teams permissions to workspaces.
 
-You will need to start a free trial of the Teams and Governance tier of TFC. The trial is good for 30 days, after which your organization will revert to the Free tier.
+You will need to upgrade to the Standard tier of TFC, which requires an HCP account. It comes with $50 in free credit. You can sign up for an HCP account [here](https://portal.cloud.hashicorp.com/signup).
 
 ## Tasks
 
@@ -24,6 +24,10 @@ Teams can have different levels of access to your workspaces. You can invite oth
 Now that you have created teams you can invite some users to your organization. Return to your **General Settings** for the organization, and select **Users**. Then click the "Invite a user" button.
 
 Invite a new user with an email you have access to and assign them to the org_admins group. You can also make up a fictitious email, although you won't be able to test permissions.
+
+If you are using Gmail or Exchange, you can create an email address that follows the format `your_email+tfc@gmail.com`. This will allow you to create a new email address that will be delivered to your inbox, but will be unique to TFC.
+
+For example, if your Gmail address is `john.smith@gmail.com`, you can use the address `john.smith+tfc@gmail.com` for your new user.
 
 ## Assign teams to workspaces with permissions
 
